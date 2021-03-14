@@ -30,7 +30,7 @@
                         <v-btn
                             block
                             large
-                            @click="login"
+                            @click="signIn"
                             color="primary"
                             class="elevation-0 mt-5 font-weight-light text-uppercase"
                             >ENTRAR</v-btn
@@ -130,7 +130,7 @@
     </v-row>
 </template>
 <script>
-import UserService from '@/service/UserService';
+import AuthService from '@/service/AuthService';
 
 export default {
     data() {
@@ -138,6 +138,7 @@ export default {
             loginValid: true,
             recoveryValid: true,
             user: {},
+            defaultRoute: '/dashboard',
             recoveryEmail: '',
             recoveryDialog: false,
             loadingDialog: false,
@@ -155,26 +156,6 @@ export default {
     },
 
     methods: {
-        /*async submit() {
-            if (!this.$refs.loginForm.validate()) return;
-            this.dialog = false;
-            this.loadingDialog = true;
-            try {
-                let resp = await RegisterService.signUp(this.user);
-                this.response.message = resp.message;
-                if (resp.status == 200) this.response.type = 'success';
-                else this.response.type = 'warning';
-                this.$refs.loginForm.resetValidation();
-                this.$refs.loginForm.reset();
-            } catch (error) {
-                this.response.message = error;
-                this.response.type = 'error';
-            } finally {
-                this.loadingDialog = false;
-                this.response.active = true;
-                this.user = {};
-            }
-        }*/
         recoveryCancel() {
             this.$refs.recoveryForm.reset();
             this.$refs.recoveryForm.resetValidation();
@@ -185,12 +166,7 @@ export default {
             if (!this.$refs.recoveryForm.validate()) return;
             this.loadingDialog = true;
             try {
-                let user = await UserService.authenticate(this.user);
-                if (user._id) {
-                    await UserService.setUserInLocalStorage(user);
-                    this.$store.dispatch('loadLoggedUser');
-                    location.reload(true);
-                }
+                console.log('TODO');
             } catch (error) {
                 this.response.message =
                     'Ocorreu um erro interno ao processar sua solicitação. Tente novamente mais tarde!';
@@ -198,30 +174,48 @@ export default {
             } finally {
                 this.loadingDialog = false;
                 this.response.active = true;
-                this.user = {};
             }
         },
 
-        async login() {
+        async signIn() {
             if (!this.$refs.loginForm.validate()) return;
             this.loadingDialog = true;
             try {
-                let user = await UserService.authenticate(this.user);
-                if (user._id) {
-                    await UserService.setUserInLocalStorage(user);
+                let resp = await AuthService.signIn(this.user);
+                console.log(resp);
+                this.response.message = resp.message;
+                if (resp.status == 200 && resp.user && resp.user.id_user) {
+                    await AuthService.setUserInLocalStorage(resp.user);
                     this.$store.dispatch('loadLoggedUser');
+                    if (
+                        resp.user.status == 'UPDATE' ||
+                        resp.user.status == 'NEW'
+                    )
+                        this.$router.push('/profile');
+                    else this.$router.push(this.defaultRoute);
+
+                    this.response.type = 'success';
+                    this.$refs.loginForm.resetValidation();
+                    this.$refs.loginForm.reset();
+                } else this.response.type = 'warning';
+
+                if (resp.user && resp.user._id) {
                     location.reload(true);
                 }
             } catch (error) {
+                console.log(error);
                 this.response.message =
                     'Ocorreu um erro interno ao processar sua solicitação. Tente novamente mais tarde!';
                 this.response.type = 'error';
             } finally {
                 this.loadingDialog = false;
                 this.response.active = true;
-                this.user = {};
             }
         }
+    },
+    mounted() {
+        if (this.$route.query && this.$route.query.r)
+            this.defaultRoute = this.$route.query.r;
     }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-app v-if="loggedUser"> </v-app>
+        <v-app v-if="loggedUser && loggedLocal"> </v-app>
         <v-app v-else>
             <v-main class="bg-image">
                 <v-container fluid fill-height>
@@ -19,8 +19,28 @@ export default {
     },
     data() {
         return {
-            loggedUser: false
+            loggedLocal: false
         };
+    },
+    computed: {
+        loggedUser() {
+            return this.$store.getters.getStateLog;
+        },
+        isUnauthorized() {
+            return this.$route.path == '/unauthorized' ? true : false;
+        }
+    },
+    beforeMount() {
+        if (localStorage.getItem('loggedUser')) {
+            this.loggedLocal = true;
+        }
+    },
+    mounted() {
+        this.$store.dispatch('loadLoggedUser');
+    },
+
+    created() {
+        window.getApp = this;
     }
 };
 </script>
