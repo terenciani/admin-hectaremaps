@@ -44,7 +44,7 @@ export default {
             try {
                 let loggedUser = AuthService.getLoggedUser();
 
-                if (loggedUser.id_user) {
+                if (loggedUser && loggedUser.id_user) {
                     API.defaults.headers['x-access-token'] = loggedUser.token;
                     context.commit('setLoggedUser', loggedUser);
                 }

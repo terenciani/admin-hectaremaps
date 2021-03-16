@@ -17,6 +17,17 @@ export default class AuthService {
         }
     } // signIn()
 
+    static async recovery(email) {
+        try {
+            let response = await API.post('recovery', {
+                email: email.toLowerCase()
+            });
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // recovery()
+
     //--------------------------local-storage--------------------------//
     static getLoggedUser() {
         return JSON.parse(localStorage.getItem('loggedUser'));
@@ -24,10 +35,15 @@ export default class AuthService {
 
     static async getTokenUser() {
         let user = await AuthService.getLoggedUser();
-        if (user != null) {
-            return user.token;
-        } else return null;
+        if (user != null) return user.token;
+        return null;
     } //getTokenUser()
+
+    static async getRoleUser() {
+        let user = await AuthService.getLoggedUser();
+        if (user != null) return user.role;
+        return null;
+    } //getRoleUser()
 
     static setUserInLocalStorage(user) {
         localStorage.setItem('loggedUser', JSON.stringify(user));

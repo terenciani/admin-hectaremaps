@@ -131,7 +131,6 @@
 </template>
 <script>
 import AuthService from '@/service/AuthService';
-
 export default {
     data() {
         return {
@@ -166,7 +165,16 @@ export default {
             if (!this.$refs.recoveryForm.validate()) return;
             this.loadingDialog = true;
             try {
-                console.log('TODO');
+                let resp = await AuthService.recovery(this.recoveryEmail);
+                this.response.message = resp.message;
+                if (resp.status == 200) {
+                    this.response.type = 'success';
+                    this.$refs.recoveryForm.resetValidation();
+                    this.$refs.recoveryForm.reset();
+                    this.recoveryDialog = false;
+                } else {
+                    this.response.type = 'warning';
+                }
             } catch (error) {
                 this.response.message =
                     'Ocorreu um erro interno ao processar sua solicitação. Tente novamente mais tarde!';
@@ -182,7 +190,6 @@ export default {
             this.loadingDialog = true;
             try {
                 let resp = await AuthService.signIn(this.user);
-                console.log(resp);
                 this.response.message = resp.message;
                 if (resp.status == 200 && resp.user && resp.user.id_user) {
                     await AuthService.setUserInLocalStorage(resp.user);
@@ -190,18 +197,16 @@ export default {
                     if (
                         resp.user.status == 'UPDATE' ||
                         resp.user.status == 'NEW'
-                    )
+                    ) {
                         this.$router.push('/profile');
-                    else this.$router.push(this.defaultRoute);
+                    } else {
+                        this.$router.push(this.defaultRoute);
+                    }
 
                     this.response.type = 'success';
                     this.$refs.loginForm.resetValidation();
                     this.$refs.loginForm.reset();
                 } else this.response.type = 'warning';
-
-                if (resp.user && resp.user._id) {
-                    location.reload(true);
-                }
             } catch (error) {
                 console.log(error);
                 this.response.message =
