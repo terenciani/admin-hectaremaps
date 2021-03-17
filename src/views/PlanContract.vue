@@ -15,6 +15,6 @@
 
 <script>
 export default {
-    name: 'Home'
+    name: 'PlanContract'
 };
 </script>

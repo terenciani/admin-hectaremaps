@@ -1,25 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import routes from './routes';
+import AuthService from './../service/AuthService';
 
 Vue.use(VueRouter);
-
-const routes = [
-    {
-        path: '/',
-        name: 'Home',
-        component: Home
-    },
-    {
-        path: '/about',
-        name: 'About',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-            import(/* webpackChunkName: "about" */ '../views/About.vue')
-    }
-];
 
 const router = new VueRouter({
     mode: 'history',
@@ -27,4 +11,20 @@ const router = new VueRouter({
     routes
 });
 
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        // precisa de autorização?
+        let user = AuthService.getLoggedUser();
+        if (user == null) {
+            // usuario é nulo?
+            next({ path: '/' });
+        } else if (to.matched.some(record => record.meta.access)) {
+            // requer permissão de acesso?
+            if (to.matched.some(record => user.role != record.meta.access)) {
+                // usuario NÃO tem permissão?
+                next({ path: '/unauthorized' });
+            } else next();
+        } else next();
+    } else next();
+});
 export default router;

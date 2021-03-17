@@ -1,9 +1,14 @@
 import AuthService from '../service/AuthService';
-const userItems = [
+const adminItems = [
     {
         icon: 'mdi-home',
-        text: 'Dashboard',
+        text: 'Início',
         to: '/'
+    },
+    {
+        icon: 'mdi-account',
+        text: 'Modificar Perfil',
+        to: '/profile'
     },
     {
         icon: 'mdi-sitemap',
@@ -18,7 +23,7 @@ const userItems = [
     {
         icon: 'mdi-account-multiple',
         text: 'Gerenciar Usuários',
-        to: '/user'
+        to: '/users'
     },
     {
         icon: 'mdi-earth',
@@ -27,31 +32,26 @@ const userItems = [
     }
 ];
 
-const adminItems = [
+const userItems = [
     {
         icon: 'mdi-home',
         text: 'Início',
         to: '/'
     },
     {
-        icon: 'folder_special',
-        text: 'Contratos e Licitação',
-        children: []
+        icon: 'mdi-account',
+        text: 'Modificar Perfil',
+        to: '/profile'
     },
     {
-        icon: 'folder_shared',
-        text: 'Operacional',
-        children: []
+        icon: 'mdi-cart',
+        text: 'Contratar Plano',
+        to: '/plancontract'
     },
     {
-        icon: 'shopping_cart',
-        text: 'Almoxarifado',
-        children: []
-    },
-    {
-        icon: 'ballot',
-        text: 'Cadastros Gerais',
-        children: []
+        icon: 'mdi-drone',
+        text: 'Solicitações de Serviço',
+        to: '/servicerequest'
     }
 ];
 

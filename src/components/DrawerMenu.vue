@@ -5,10 +5,10 @@
                 @click.stop="drawer = !drawer"
             ></v-app-bar-nav-icon>
 
-            <v-toolbar-title>{{ toolbarTitle }}</v-toolbar-title>
+            <v-toolbar-title>{{ $route.name }}</v-toolbar-title>
 
             <v-spacer></v-spacer>
-            <v-list color="transparent">
+            <v-list color="transparent" class="d-none d-sm-flex">
                 <v-menu offset-y transition="scale-transition">
                     <template v-slot:activator="{ on, attrs }">
                         <v-list-item v-on="on" v-bind="attrs">

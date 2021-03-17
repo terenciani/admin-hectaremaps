@@ -6,6 +6,24 @@
             v-if="loggedUser && loggedLocal"
         >
             <drawer-menu></drawer-menu>
+
+            <v-main v-if="isUnauthorized">
+                <v-layout fill-height justify-center align-center>
+                    <v-container>
+                        <v-col cols="12" class="text-center">
+                            <v-icon size="60px">{{ errorSection.icon }}</v-icon>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                            <span class="display-1">{{
+                                errorSection.text
+                            }}</span>
+                        </v-col>
+                    </v-container>
+                </v-layout>
+            </v-main>
+            <v-main v-else>
+                <router-view></router-view>
+            </v-main>
         </v-app>
         <v-app v-else>
             <v-main class="bg-image">
@@ -27,7 +45,11 @@ export default {
     },
     data() {
         return {
-            loggedLocal: false
+            loggedLocal: false,
+            errorSection: {
+                icon: 'mdi-link-lock',
+                text: 'Acesso não autorizado'
+            }
         };
     },
     methods: {
