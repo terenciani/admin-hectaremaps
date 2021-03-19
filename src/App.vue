@@ -22,7 +22,9 @@
                 </v-layout>
             </v-main>
             <v-main v-else>
-                <router-view></router-view>
+                <v-container>
+                    <router-view></router-view>
+                </v-container>
             </v-main>
         </v-app>
         <v-app v-else>
