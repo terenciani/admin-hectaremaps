@@ -17,7 +17,22 @@ export default class UploadService {
         } catch (error) {
             throw error.response.data;
         }
-    } // getData()
+    } // upload()
+    static async uploadVideo(file, onUploadProgress) {
+        let formData = new FormData();
+        formData.append('file', file);
+        try {
+            let siteData = await API.post(`uploadvideo`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress
+            });
+            return siteData.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // uploadVideo()
     static async setData(homeData) {
         try {
             let response = await API.post('sitedata', homeData);

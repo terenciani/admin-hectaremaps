@@ -1,14 +1,14 @@
 <template>
     <div>
         <v-row class="py-5">
-            <v-col cols="6">
+            <v-col cols="12" md="6">
                 <v-checkbox
                     v-model="editing"
                     :disabled="loadingDialog || editing"
                     label="Ativar Edição"
                 ></v-checkbox>
             </v-col>
-            <v-col cols="6" class="text-right">
+            <v-col cols="12" md="6" class="text-center text-md-right">
                 <v-btn
                     outlined
                     large
@@ -47,104 +47,14 @@
                         >Seção Principal</v-expansion-panel-header
                     >
                     <v-expansion-panel-content>
+                        <upload-image-site
+                            area="hero"
+                            :editing="editing"
+                            :loading-dialog="loadingDialog"
+                            :background-image="homeData.hero.background"
+                            @onFinaly="init()"
+                        ></upload-image-site>
                         <v-row>
-                            <v-col cols="12" sm="6" md="3">
-                                <v-img
-                                    :src="
-                                        `${host}/assets/${homeData.hero.background}`
-                                    "
-                                    max-width="500"
-                                    max-height="300"
-                                >
-                                    <template v-slot:placeholder>
-                                        <v-row
-                                            class="fill-height ma-0"
-                                            align="center"
-                                            justify="center"
-                                        >
-                                            <v-progress-circular
-                                                indeterminate
-                                                color="grey lighten-5"
-                                            ></v-progress-circular>
-                                        </v-row>
-                                    </template>
-                                </v-img>
-                            </v-col>
-                            <v-col
-                                cols="12"
-                                sm="6"
-                                md="9"
-                                class="d-flex align-center"
-                            >
-                                <v-row>
-                                    <v-col cols="12" v-if="!alterHeroImage">
-                                        <v-btn
-                                            class="teal white--text"
-                                            large
-                                            block
-                                            :disabled="
-                                                loadingDialog || !editing
-                                            "
-                                            @click="alterHeroImage = true"
-                                        >
-                                            Alterar Imagem
-                                        </v-btn>
-                                    </v-col>
-                                    <v-col cols="12" v-else>
-                                        <v-row class="pb-5">
-                                            <v-col
-                                                cols="12"
-                                                md="9"
-                                                class="pb-0"
-                                            >
-                                                <v-file-input
-                                                    label="Imagem de fundo principal"
-                                                    outlined
-                                                    accept="image/*"
-                                                    prepend-icon="mdi-camera"
-                                                    :disabled="
-                                                        loadingDialog ||
-                                                            !editing
-                                                    "
-                                                    @change="selectFile"
-                                                ></v-file-input>
-                                            </v-col>
-                                            <v-col
-                                                cols="12"
-                                                md="2"
-                                                class="pb-0"
-                                            >
-                                                <v-btn
-                                                    color="success"
-                                                    large
-                                                    block
-                                                    :disabled="
-                                                        loadingDialog ||
-                                                            !editing ||
-                                                            !currentFile
-                                                    "
-                                                    @click="upload('hero')"
-                                                >
-                                                    Atualizar
-                                                    <v-icon right dark
-                                                        >mdi-cloud-upload</v-icon
-                                                    >
-                                                </v-btn>
-                                            </v-col>
-                                        </v-row>
-                                    </v-col>
-                                    <v-col cols="12" v-if="currentFile">
-                                        <v-progress-linear
-                                            v-model="progress"
-                                            color="light-blue"
-                                            height="25"
-                                            reactive
-                                        >
-                                            <strong>{{ progress }} %</strong>
-                                        </v-progress-linear>
-                                    </v-col>
-                                </v-row>
-                            </v-col>
                             <v-col cols="12" md="6">
                                 <v-text-field
                                     outlined
@@ -202,8 +112,15 @@
                         >Seção Serviços</v-expansion-panel-header
                     >
                     <v-expansion-panel-content>
+                        <upload-image-site
+                            area="service"
+                            :editing="editing"
+                            :loading-dialog="loadingDialog"
+                            :background-image="homeData.service.background"
+                            @onFinaly="init()"
+                        ></upload-image-site>
                         <v-row>
-                            <v-col cols="12" sm="6" md="4">
+                            <v-col cols="12">
                                 <v-text-field
                                     outlined
                                     :disabled="loadingDialog || !editing"
@@ -220,7 +137,7 @@
                     >
                     <v-expansion-panel-content>
                         <v-row>
-                            <v-col cols="12" sm="6" md="4">
+                            <v-col cols="12">
                                 <v-text-field
                                     outlined
                                     :disabled="loadingDialog || !editing"
@@ -236,8 +153,21 @@
                         >Seção Vídeo</v-expansion-panel-header
                     >
                     <v-expansion-panel-content>
+                        <upload-image-site
+                            area="video"
+                            :editing="editing"
+                            :loading-dialog="loadingDialog"
+                            :background-image="homeData.video.background"
+                            @onFinaly="init()"
+                        ></upload-image-site>
+                        <upload-video-site
+                            :editing="editing"
+                            :loading-dialog="loadingDialog"
+                            :src="homeData.video.src"
+                            @onFinaly="init()"
+                        ></upload-video-site>
                         <v-row>
-                            <v-col cols="12" sm="6" md="4">
+                            <v-col cols="12">
                                 <v-text-field
                                     outlined
                                     :disabled="loadingDialog || !editing"
@@ -335,53 +265,38 @@
             </v-expansion-panels>
         </v-form>
 
-        <v-dialog v-model="loadingDialog" hide-overlay persistent width="350">
-            <v-card color="primary" dark>
-                <v-card-text>
-                    <v-card-text>
-                        Aguarde! Seu e-mail está sendo enviado!</v-card-text
-                    >
-                    <v-progress-linear
-                        indeterminate
-                        color="white"
-                        class="mb-0"
-                    ></v-progress-linear>
-                </v-card-text>
-            </v-card>
-        </v-dialog>
-        <v-snackbar v-model="response.active" :color="response.type">
-            {{ response.message }}
-
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
-                    Fechar
-                </v-btn>
-            </template>
-        </v-snackbar>
+        <loading-dialog
+            :active="loadingDialog"
+            message="Aguarde! Os dados estão sendo enviados"
+        />
+        <default-snackbar
+            :show="response.active"
+            :type="response.type"
+            :message="response.message"
+            @close="response.active = false"
+        />
     </div>
 </template>
 
 <script>
-import config from './../../config';
 import DataService from '@/service/DataService';
-import UploadService from '@/service/UploadService';
+import UploadImageSite from '@/components/UploadImageSite';
+import UploadVideoSite from '@/components/UploadVideoSite';
+import DefaultSnackbar from '@/components/DefaultSnackbar';
+import LoadingDialog from '@/components/LoadingDialog';
 export default {
     name: 'Site',
+    components: {
+        UploadImageSite,
+        DefaultSnackbar,
+        LoadingDialog,
+        UploadVideoSite
+    },
     data() {
         return {
             editing: false,
-            host: config.apiHost,
-            alterHeroImage: false,
             loadingDialog: false,
             valid: true,
-            fileInfos: [],
-            currentFile: undefined,
-            progress: 0,
             requiredField: v => !!v || 'Este campo é obrigatório',
             mask: [
                 '(',
@@ -419,15 +334,9 @@ export default {
         this.init();
     },
     methods: {
-        selectFile(file) {
-            this.progress = 0;
-            this.currentFile = file;
-        },
         async init() {
             this.editing = false;
             this.homeData = await DataService.getData();
-            this.alterHeroImage = false;
-            this.currentFile = undefined;
         },
         async save() {
             if (!this.$refs.form.validate()) {
@@ -453,37 +362,6 @@ export default {
                 this.loadingDialog = false;
                 this.response.active = true;
             }
-        },
-        upload(area) {
-            if (!this.currentFile) {
-                this.response = {
-                    message: 'Por favor, selecione uma imagem!',
-                    type: 'error',
-                    active: true
-                };
-                return;
-            }
-            UploadService.upload(this.currentFile, area, event => {
-                this.progress = Math.round((100 * event.loaded) / event.total);
-            })
-                .then(() => {
-                    this.response = {
-                        message: 'Imagem enviada com sucesso!',
-                        type: 'success',
-                        active: true
-                    };
-                    this.init();
-                })
-                .catch(() => {
-                    this.progress = 0;
-                    this.response = {
-                        message:
-                            'Não foi possível enviar a imagem. Tente mais tarde!',
-                        type: 'error',
-                        active: true
-                    };
-                    this.currentFile = undefined;
-                });
         }
     }
 };
