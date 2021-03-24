@@ -63,10 +63,10 @@
                     </v-row>
                 </v-container>
             </template>
-            <template v-slot:item.create_at="{ item }">
+            <template v-slot:[`item.create_at`]="{ item }">
                 {{ utilFormatter.formatDateISOToBR(item.create_at) }}
             </template>
-            <template v-slot:item.role="{ item }">
+            <template v-slot:[`item.role`]="{ item }">
                 <v-chip
                     class="ma-2"
                     outlined
@@ -75,7 +75,7 @@
                     {{ item.role == 'ADMIN' ? 'Administrador' : 'Cliente' }}
                 </v-chip>
             </template>
-            <template v-slot:item.status="{ item }">
+            <template v-slot:[`item.status`]="{ item }">
                 <v-chip class="ma-2" outlined :color="getColor(item.status)">
                     {{ getText(item.status) }}
                 </v-chip>
@@ -88,7 +88,7 @@
             <template slot="no-data" v-else>
                 <strong> {{ emptyRecordsText }} </strong>
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
                     :disabled="loading"
                     @click="edit(item)"
