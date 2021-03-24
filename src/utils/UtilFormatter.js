@@ -10,7 +10,6 @@ export default class UtilFormatter {
     }
     //de isoDate para data dd/mm/yyyy
     static formatDateISOToBR(date) {
-        console.log(date);
         if (!date) return null;
 
         const [year, month, day] = date.substring(0, 10).split('-');
