@@ -101,7 +101,7 @@
                 </v-btn>
                 <v-btn
                     :disabled="loading"
-                    @click="deleteItem(item)"
+                    @click="openConfirmDialog(item)"
                     color="error"
                     title="Editar registro"
                     icon
@@ -111,13 +111,36 @@
                 </v-btn>
             </template>
         </v-data-table>
+        <confirm-dialog
+            :show="dialogRemove"
+            :message="
+                `<span class='font-weight-bold'>${user.name} ${user.lastname}</span>
+                (${user.email}) será removido e essa ação não poderá ser desfeita.`
+            "
+            @confirm="remove()"
+            @cancel="
+                dialogRemove = false;
+                user = {};
+            "
+        >
+        </confirm-dialog>
+        <default-snackbar
+            :show="response.active"
+            :type="response.type"
+            :message="response.message"
+            @close="response.active = false"
+        />
     </div>
 </template>
 
 <script>
 import UtilFormatter from '../utils/UtilFormatter';
 import UserService from '@/service/UserService';
+import ConfirmDialog from '../components/ConfirmDialog.vue';
+import DefaultSnackbar from '@/components/DefaultSnackbar';
+
 export default {
+    components: { ConfirmDialog, DefaultSnackbar },
     name: 'Users',
     data() {
         return {
@@ -164,6 +187,11 @@ export default {
             loading: false,
             emptyRecordsText: 'Nenhum registro encontrado',
             records: 0,
+            response: {
+                message: '',
+                type: 'success',
+                active: false
+            },
             search: '',
             user: {},
             userRemove: {},
@@ -172,7 +200,24 @@ export default {
         };
     },
     methods: {
-        async initialize() {
+        openConfirmDialog(item) {
+            this.user = item;
+            this.dialogRemove = true;
+        },
+        async remove() {
+            this.loading = true;
+            try {
+                this.response.message = await UserService.remove(this.user);
+                this.response.type = 'success';
+            } catch (error) {
+                this.response.message = error;
+                this.response.type = 'error';
+            } finally {
+                this.init();
+                this.response.active = true;
+            }
+        },
+        async init() {
             this.loading = true;
             try {
                 this.users = await UserService.getAll();
@@ -224,7 +269,7 @@ export default {
         }
     },
     created() {
-        this.initialize();
+        this.init();
     }
 };
 </script>
