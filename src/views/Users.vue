@@ -111,7 +111,7 @@
                             <strong>E-mail:</strong> {{ item.email }} <br />
                             <strong>Telefone:</strong>
                             {{ utilFormatter.formatPhone(item.phone) }} <br />
-                            <strong>Cirado em:</strong>
+                            <strong>Criado em:</strong>
                             {{
                                 utilFormatter.formatDateISOToBR(item.create_at)
                             }}
