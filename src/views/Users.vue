@@ -295,7 +295,7 @@
                                         $vuetify.breakpoint.xs ? 'py-2' : ''
                                     "
                                 >
-                                    <strong>Permissão</strong>
+                                    <strong>Situação Cadastral</strong>
                                     <v-radio-group v-model="user.status">
                                         <v-radio
                                             label="Novo"
