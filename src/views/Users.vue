@@ -41,8 +41,9 @@
                                 class="mb-2"
                                 block
                                 large
+                                @click="openCreateDialog"
                             >
-                                Novo Usuário
+                                Registrar Usuário
                                 <v-icon class="pl-5" dark>
                                     mdi-plus
                                 </v-icon>
@@ -56,6 +57,7 @@
                             bottom
                             x-large
                             right
+                            @click="openCreateDialog"
                             color="primary"
                         >
                             <v-icon>mdi-plus </v-icon>
@@ -89,9 +91,46 @@
                 <strong> {{ emptyRecordsText }} </strong>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
+                <v-menu bottom left>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            :disabled="loading"
+                            title="Visualizar dados"
+                            icon
+                            large
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-eye</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-text>
+                            <strong>Nome: </strong> {{ item.name }}
+                            {{ item.lastname }} <br />
+                            <strong>E-mail:</strong> {{ item.email }} <br />
+                            <strong>Telefone:</strong>
+                            {{ utilFormatter.formatPhone(item.phone) }} <br />
+                            <strong>Cirado em:</strong>
+                            {{
+                                utilFormatter.formatDateISOToBR(item.create_at)
+                            }}
+                            <br />
+                            <strong>Ativado em:</strong>
+                            {{
+                                utilFormatter.formatDateISOToBR(item.confirm_at)
+                            }}
+                            <br />
+                            <strong>Último acesso em:</strong>
+                            {{
+                                utilFormatter.formatDateISOToBR(item.access_at)
+                            }}
+                        </v-card-text>
+                    </v-card>
+                </v-menu>
                 <v-btn
                     :disabled="loading"
-                    @click="edit(item)"
+                    @click="openEditDialog(item)"
                     color="warning"
                     title="Editar registro"
                     icon
@@ -111,6 +150,187 @@
                 </v-btn>
             </template>
         </v-data-table>
+        <v-dialog
+            v-model="dialogForm"
+            persistent
+            :fullscreen="$vuetify.breakpoint.smAndDown"
+            max-width="600px"
+        >
+            <v-card>
+                <v-toolbar color="teal" dark>
+                    {{ user.id_user != '' ? 'Editando' : 'Novo' }} Usuário
+                    <v-spacer></v-spacer>
+                    <v-btn icon>
+                        <v-icon @click="init">mdi-close</v-icon>
+                    </v-btn>
+                </v-toolbar>
+                <v-card-text>
+                    <v-container class="py-5">
+                        <v-form ref="form" v-model="valid">
+                            <v-row>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <v-text-field
+                                        label="Nome *"
+                                        v-model="user.name"
+                                        required
+                                        :rules="nameRules"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <v-text-field
+                                        label="Sobrenome *"
+                                        :rules="lastNameRules"
+                                        v-model="user.lastname"
+                                        required
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <v-text-field
+                                        label="E-mail *"
+                                        :rules="emailRules"
+                                        v-model="user.email"
+                                        required
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <v-text-field
+                                        :rules="phoneRules"
+                                        v-mask="mask"
+                                        placeholder="(99) 9 9999-9999"
+                                        label="Telefone de contato *"
+                                        v-model="user.phone"
+                                        required
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    v-if="!user.id_user"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <v-text-field
+                                        :append-icon="
+                                            show ? 'mdi-eye' : 'mdi-eye-off'
+                                        "
+                                        :type="show ? 'text' : 'password'"
+                                        :rules="passwordRules"
+                                        hint="A senha deve ter no mínimo 8 characteres."
+                                        label="Senha de acesso *"
+                                        v-model="user.password"
+                                        required
+                                        @click:append="show = !show"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    v-if="!user.id_user"
+                                    md="6"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <v-text-field
+                                        :rules="confirmRules"
+                                        :append-icon="
+                                            show2 ? 'mdi-eye' : 'mdi-eye-off'
+                                        "
+                                        :type="show2 ? 'text' : 'password'"
+                                        label="Confirmação de Senha *"
+                                        v-model="user.confirmpass"
+                                        @click:append="show2 = !show2"
+                                        required
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    v-if="user.id_user"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <strong>Permissão</strong>
+                                    <v-radio-group v-model="user.role">
+                                        <v-radio
+                                            label="Administrador"
+                                            value="ADMIN"
+                                        ></v-radio>
+                                        <v-radio
+                                            label="Cliente"
+                                            value="USER"
+                                        ></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    v-if="user.id_user"
+                                    :class="
+                                        $vuetify.breakpoint.xs ? 'py-2' : ''
+                                    "
+                                >
+                                    <strong>Permissão</strong>
+                                    <v-radio-group v-model="user.status">
+                                        <v-radio
+                                            label="Novo"
+                                            value="NEW"
+                                        ></v-radio>
+                                        <v-radio
+                                            label="Ativo"
+                                            value="ACTIVE"
+                                        ></v-radio>
+                                        <v-radio
+                                            label="Bloqueado"
+                                            value="BLOCKED"
+                                        ></v-radio>
+                                        <v-radio
+                                            label="Requer atualização cadastral"
+                                            value="UPDATE"
+                                        ></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions bottom>
+                    <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="init" color="error" text>
+                        Cancelar
+                    </v-btn>
+                    <v-btn color="success lighten-1" text @click="save">
+                        Salvar
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <confirm-dialog
             :show="dialogRemove"
             :message="
@@ -144,9 +364,26 @@ export default {
     name: 'Users',
     data() {
         return {
-            dialog: false,
+            dialogForm: false,
             dialogRemove: false,
             footerText: 'Total de registros: ',
+            mask: [
+                '(',
+                /\d/,
+                /\d/,
+                ') ',
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                '-',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/
+            ],
             headers: [
                 {
                     text: 'Nome',
@@ -194,12 +431,39 @@ export default {
             },
             search: '',
             user: {},
-            userRemove: {},
             users: [],
-            utilFormatter: UtilFormatter
+            show: false,
+            show2: false,
+            utilFormatter: UtilFormatter,
+            valid: true,
+            nameRules: [v => !!v || 'O nome é obrigatório.'],
+            lastNameRules: [v => !!v || 'O sobrenome é obrigatório.'],
+            emailRules: [
+                v => !!v || 'O e-mail é obrigatório',
+                v => /.+@.+\..+/.test(v) || 'Informe um e-mail válido.'
+            ],
+            phoneRules: [v => !!v || 'O telefone é obrigatório.'],
+            passwordRules: [
+                v => !!v || 'A senha é obrigatória.',
+                v =>
+                    (v && v.length >= 8) ||
+                    'A senha deve ter no mínimo 8 characteres.'
+            ],
+            confirmRules: [
+                v => !!v || 'A confirmação de senha é obrigatória.',
+                v => (v && v == this.user.password) || 'As senhas não conferem.'
+            ]
         };
     },
     methods: {
+        openCreateDialog() {
+            this.user = Object.assign({}, undefined);
+            this.dialogForm = true;
+        },
+        openEditDialog(item) {
+            this.user = Object.assign({}, item);
+            this.dialogForm = true;
+        },
         openConfirmDialog(item) {
             this.user = item;
             this.dialogRemove = true;
@@ -222,10 +486,10 @@ export default {
             try {
                 this.users = await UserService.getAll();
                 this.user = {};
-                this.dialog = false;
+                this.dialogForm = false;
                 this.calculateRecords();
                 this.dialogRemove = false;
-                this.userRemove = {};
+                this.response.active = false;
             } catch (error) {
                 console.log(error);
             } finally {
@@ -239,6 +503,24 @@ export default {
             }
             this.records = amount;
         },
+        async save() {
+            if (!this.$refs.form.validate()) return;
+            try {
+                if (this.user.id_user) {
+                    this.response.message = await UserService.update(this.user);
+                    this.response.type = 'success';
+                } else {
+                    this.response.message = await UserService.save(this.user);
+                    this.response.type = 'success';
+                }
+            } catch (error) {
+                this.response.message = error;
+                this.response.type = 'error';
+            } finally {
+                this.init();
+                this.response.active = true;
+            }
+        }, // save()
         getColor(status) {
             switch (status) {
                 case 'ACTIVE':
@@ -270,6 +552,12 @@ export default {
     },
     created() {
         this.init();
+    },
+    watch: {
+        dialogForm() {
+            if (!this.user.id_user) this.$refs.form?.reset();
+            this.$refs.form?.resetValidation();
+        }
     }
 };
 </script>
