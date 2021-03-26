@@ -137,7 +137,7 @@ export default {
             loginValid: true,
             recoveryValid: true,
             user: {},
-            defaultRoute: '/dashboard',
+            defaultRoute: '/',
             recoveryEmail: '',
             recoveryDialog: false,
             loadingDialog: false,
@@ -215,6 +215,7 @@ export default {
             } finally {
                 this.loadingDialog = false;
                 this.response.active = true;
+                location.reload();
             }
         }
     },

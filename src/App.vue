@@ -69,7 +69,7 @@ export default {
     },
     beforeMount() {
         this.user = AuthService.getLoggedUser();
-        if (this.user.id_user) {
+        if (this.user?.id_user) {
             this.loggedLocal = true;
         }
     },
