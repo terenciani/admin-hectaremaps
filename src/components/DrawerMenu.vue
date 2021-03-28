@@ -39,7 +39,7 @@
         <v-navigation-drawer v-model="drawer" temporary absolute>
             <v-list class="text-xs-center" dense>
                 <v-img
-                    :src="require('@/assets/logo.png')"
+                    :src="`${host}/assets/icon/logo`"
                     style="width:50%; margin: 0 auto;"
                     alt="Logo"
                 />
@@ -90,12 +90,14 @@
 </template>
 <script>
 import DrawerItems from '../data/DrawerItems';
+import config from '../../config';
 import AuthService from '../service/AuthService';
 export default {
     data() {
         return {
             toolbarTitle: '',
             user: {},
+            host: config.apiHost,
             drawer: true,
             group: null,
             items: [

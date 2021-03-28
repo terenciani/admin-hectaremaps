@@ -44,6 +44,41 @@
             <v-expansion-panels>
                 <v-expansion-panel>
                     <v-expansion-panel-header
+                        >Logo e Favicon</v-expansion-panel-header
+                    >
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <p>
+                                    Logo (indicado usar imagem no formato png
+                                    (fundo transparente) com 512x512 px)
+                                </p>
+                                <upload-image-site
+                                    area="logo"
+                                    :editing="editing"
+                                    :loading-dialog="loadingDialog"
+                                    :background-image="homeData.icon.logo"
+                                    @onFinaly="init()"
+                                ></upload-image-site>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <p>
+                                    Favicon (indicado usar imagem no formato
+                                    icon com 16x16 px)
+                                </p>
+                                <upload-image-site
+                                    area="favicon"
+                                    :editing="editing"
+                                    :loading-dialog="loadingDialog"
+                                    :background-image="homeData.icon.favicon"
+                                    @onFinaly="init()"
+                                ></upload-image-site>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
+                    <v-expansion-panel-header
                         >Seção Principal</v-expansion-panel-header
                     >
                     <v-expansion-panel-content>
@@ -70,6 +105,39 @@
                                     v-model="homeData.hero.subtitle"
                                     label="Subtítulo da seção"
                                 ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-radio-group
+                                    outlined
+                                    :disabled="loadingDialog || !editing"
+                                    v-model="homeData.hero.position"
+                                    label="Posição do texto na página principal"
+                                >
+                                    <v-radio
+                                        label="Na parte superior da seção"
+                                        value="top"
+                                    ></v-radio>
+                                    <v-radio
+                                        label="No meio da seção"
+                                        value="center"
+                                    ></v-radio>
+                                    <v-radio
+                                        label="Na parte inferior da seção"
+                                        value="bottom"
+                                    ></v-radio>
+                                </v-radio-group>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-checkbox
+                                    :disabled="loadingDialog || !editing"
+                                    v-model="homeData.hero.shownavigationlogo"
+                                    label="Mostrar Logo (Imagem) na barra de navegação?"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    :disabled="loadingDialog || !editing"
+                                    v-model="homeData.hero.showlogo"
+                                    label="Mostrar Logo (Imagem) na seção principal?"
+                                ></v-checkbox>
                             </v-col>
                         </v-row>
                     </v-expansion-panel-content>
@@ -120,13 +188,20 @@
                             @onFinaly="init()"
                         ></upload-image-site>
                         <v-row>
-                            <v-col cols="12">
+                            <v-col cols="12" sm="6">
                                 <v-text-field
                                     outlined
                                     :disabled="loadingDialog || !editing"
                                     v-model="homeData.service.title"
                                     label="Título da seção"
                                 ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                                <v-checkbox
+                                    :disabled="loadingDialog || !editing"
+                                    v-model="homeData.service.showprice"
+                                    label="Mostrar valor do serviço no site?"
+                                ></v-checkbox>
                             </v-col>
                         </v-row>
                     </v-expansion-panel-content>
@@ -137,13 +212,20 @@
                     >
                     <v-expansion-panel-content>
                         <v-row>
-                            <v-col cols="12">
+                            <v-col cols="12" sm="6">
                                 <v-text-field
                                     outlined
                                     :disabled="loadingDialog || !editing"
                                     v-model="homeData.plan.title"
                                     label="Título da seção"
                                 ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                                <v-checkbox
+                                    :disabled="loadingDialog || !editing"
+                                    v-model="homeData.plan.showprice"
+                                    label="Mostrar serviços detalhados?"
+                                ></v-checkbox>
                             </v-col>
                         </v-row>
                     </v-expansion-panel-content>
@@ -316,6 +398,7 @@ export default {
                 /\d/
             ],
             homeData: {
+                icon: {},
                 hero: {},
                 about: {},
                 service: {},

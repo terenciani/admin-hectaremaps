@@ -1,5 +1,5 @@
 <template>
-    <v-snackbar v-model="show" :color="type">
+    <v-snackbar v-model="visible" :color="type">
         {{ message }}
         <template v-slot:action="{ attrs }">
             <v-btn :class="type" text v-bind="attrs" @click="$emit('close')">
@@ -14,6 +14,11 @@ export default {
         show: Boolean,
         type: String,
         message: String
+    },
+    computed: {
+        visible() {
+            return this.show ? this.show : false;
+        }
     }
 };
 </script>
