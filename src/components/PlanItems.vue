@@ -3,7 +3,7 @@
         <v-data-table
             :loading="loading"
             :headers="headers"
-            :items="plans"
+            :items="planItems"
             :search="search"
             class="elevation-1"
         >
@@ -16,7 +16,7 @@
                             md="4"
                             class="d-flex align-content-center"
                         >
-                            <h2>Gestão de Planos</h2>
+                            <h2>Serviços Inclusos</h2>
                             <v-spacer></v-spacer>
                             <v-divider
                                 class="mx-4 d-none d-sm-flex"
@@ -34,7 +34,7 @@
                                 hide-details
                             ></v-text-field>
                         </v-col>
-                        <v-col md="3" class="d-none d-md-flex">
+                        <v-col md="3">
                             <v-btn
                                 color="primary"
                                 dark
@@ -43,25 +43,12 @@
                                 large
                                 @click="openCreateDialog"
                             >
-                                Novo Plano
+                                Novo Serviço
                                 <v-icon class="pl-5" dark>
                                     mdi-plus
                                 </v-icon>
                             </v-btn>
                         </v-col>
-                        <v-btn
-                            v-show="$vuetify.breakpoint.smAndDown"
-                            fab
-                            dark
-                            fixed
-                            bottom
-                            x-large
-                            right
-                            @click="openCreateDialog"
-                            color="primary"
-                        >
-                            <v-icon>mdi-plus </v-icon>
-                        </v-btn>
                     </v-row>
                 </v-container>
             </template>
@@ -116,10 +103,14 @@
                 </v-btn>
             </template>
         </v-data-table>
-        <v-dialog v-model="dialogForm" fullscreen>
+        <v-dialog
+            v-model="dialogForm"
+            :fullscreen="$vuetify.breakpoint.xs"
+            max-width="600px"
+        >
             <v-card>
                 <v-toolbar color="teal" dark>
-                    {{ plan.id_plan == null ? 'Novo' : 'Editando' }} Plano
+                    {{ planItem.id_plan == null ? 'Novo' : 'Editando' }} Serviço
                     <v-spacer></v-spacer>
                     <v-btn icon>
                         <v-icon @click="init">mdi-close</v-icon>
@@ -129,85 +120,53 @@
                     <v-container class="pt-5">
                         <v-form ref="form" v-model="valid">
                             <v-row>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
+                                <v-col cols="12" sm="6" class="py-xs-2 py-sm-0">
                                     <v-text-field
-                                        label="Nome *"
-                                        v-model="plan.name"
+                                        label="Descrição *"
+                                        v-model="planItem.description"
                                         :rules="[requiredRule]"
                                     ></v-text-field>
                                 </v-col>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
+                                <v-col cols="12" sm="6" class="py-xs-2 py-sm-0">
+                                    <v-text-field
+                                        label="Quantidade *"
+                                        v-model="planItem.quantity"
+                                        :rules="[requiredRule]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" class="py-xs-2 py-sm-0">
                                     <v-currency-field
                                         label="Valor Unitário (R$)"
                                         v-bind="currency_config"
-                                        v-model="plan.price"
+                                        v-model="planItem.price"
                                         :rules="[requiredRule]"
                                     >
                                     </v-currency-field>
                                 </v-col>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
+                                <v-col cols="12" sm="6" class="py-xs-2 py-sm-0">
                                     <v-text-field
-                                        label="Quantidade de Imagens *"
-                                        v-model="plan.number_of_images"
+                                        label="Unidade de medida (m, ha..) *"
+                                        v-model="planItem.unit"
                                         :rules="[requiredRule]"
                                     ></v-text-field>
                                 </v-col>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
-                                    <v-text-field
-                                        label="Espaço de Armazenamento (em Mb) *"
-                                        v-model="plan.storage_space"
-                                        :rules="[requiredRule]"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
-                                    <v-textarea
-                                        label="Observação"
-                                        v-model="plan.observation"
-                                    ></v-textarea>
-                                </v-col>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
-                                    <strong>Situação</strong>
+                                <v-col cols="12" sm="6" class="py-xs-2 py-sm-0">
                                     <v-checkbox
-                                        v-model="plan.active"
+                                        v-model="planItem.active"
                                         label="Ativo?"
-                                        :value="plan.active"
+                                        :value="planItem.active"
                                     ></v-checkbox>
-                                    <strong>Site</strong>
-                                    <v-checkbox
-                                        v-model="plan.site_emphasis"
-                                        label="Dar destaque neste plano?"
-                                        :value="plan.site_emphasis"
-                                    ></v-checkbox>
-                                </v-col>
-                                <v-col cols="12" class="py-xs-2 py-sm-0">
-                                    <plan-items
-                                        v-if="plan.id_plan"
-                                        :plan="plan.id_plan"
-                                    ></plan-items>
-                                    <v-alert
-                                        type="info"
-                                        v-else
-                                        dismissible
-                                        dense
-                                        outlined
-                                    >
-                                        Você poderá adicionar os serviços deste
-                                        plano na opção editar (<v-icon
-                                            color="warning"
-                                            >mdi-pencil</v-icon
-                                        >) após salvá-lo!
-                                    </v-alert>
                                 </v-col>
                             </v-row>
                         </v-form>
                     </v-container>
                 </v-card-text>
                 <v-card-actions bottom>
-                    <v-container class="py-5 text-right">
-                        <v-btn @click="init" color="error" class="mr-sm-5">
+                    <v-container class="py-0 text-right">
+                        <v-btn @click="init" color="error" text>
                             Cancelar
                         </v-btn>
-                        <v-btn color="success lighten-1" @click="save">
+                        <v-btn color="success lighten-1" text @click="save">
                             Salvar
                         </v-btn>
                     </v-container>
@@ -217,12 +176,14 @@
         <confirm-dialog
             :show="dialogRemove"
             :message="
-                `<span class='font-weight-bold'>${plan.name}</span> será removido e essa ação não poderá ser desfeita.`
+                `<span class='font-weight-bold'>${planItem.description}</span> será removido e essa ação não poderá ser desfeita.`
             "
             @confirm="remove()"
             @cancel="
                 dialogRemove = false;
-                plan = {};
+                planItem = {
+                    fk_plan: plan
+                };
             "
         >
         </confirm-dialog>
@@ -234,17 +195,15 @@
         />
     </div>
 </template>
-
 <script>
 import Currency from '../utils/Currency';
 import UtilFormatter from '../utils/UtilFormatter';
 import PlanService from '@/service/PlanService';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
 import DefaultSnackbar from '@/components/DefaultSnackbar';
-import PlanItems from '@/components/PlanItems';
+
 export default {
-    components: { ConfirmDialog, DefaultSnackbar, PlanItems },
-    name: 'Plans',
+    components: { ConfirmDialog, DefaultSnackbar },
     data() {
         return {
             dialogForm: false,
@@ -253,24 +212,24 @@ export default {
             currency_config: Currency.real,
             headers: [
                 {
-                    text: 'Nome',
+                    text: 'Descrição',
                     align: 'left',
-                    value: 'name'
+                    value: 'description'
+                },
+                {
+                    text: 'Quantidade',
+                    align: 'center',
+                    value: 'quantity'
+                },
+                {
+                    text: 'Unidade de Medida',
+                    align: 'center',
+                    value: 'unit'
                 },
                 {
                     text: 'Preço',
                     align: 'right',
                     value: 'price'
-                },
-                {
-                    text: 'Quantidade de imagens',
-                    align: 'center',
-                    value: 'number_of_images'
-                },
-                {
-                    text: 'Espaço de Armazenamento (em Mb)',
-                    align: 'center',
-                    value: 'storage_space'
                 },
                 {
                     text: 'Criado em',
@@ -297,32 +256,38 @@ export default {
                 active: false
             },
             search: '',
-            plan: {},
-            plans: [],
-            planServices: [],
-            utilFormatter: UtilFormatter,
+            planItem: {
+                fk_plan: this.plan
+            },
+            planItems: [],
             valid: true,
-            requiredRule: v => !!v || 'Este campo é obrigatório.'
+            requiredRule: v => !!v || 'Este campo é obrigatório.',
+            utilFormatter: UtilFormatter
         };
+    },
+    props: {
+        plan: Number
     },
     methods: {
         openCreateDialog() {
-            this.plan = Object.assign({}, undefined);
+            this.planItem = Object.assign({}, { fk_plan: this.plan });
             this.dialogForm = true;
         },
         async openEditDialog(item) {
-            this.plan = Object.assign({}, item);
-            this.plan.price = await item.price;
+            this.planItem = Object.assign({}, item);
+            this.planItem.price = await item.price;
             this.dialogForm = true;
         },
         openConfirmDialog(item) {
-            this.plan = item;
+            this.planItem = item;
             this.dialogRemove = true;
         },
         async remove() {
             this.loading = true;
             try {
-                this.response.message = await PlanService.remove(this.plan);
+                this.response.message = await PlanService.removePlanItem(
+                    this.planItem
+                );
                 this.response.type = 'success';
             } catch (error) {
                 this.response.message = error;
@@ -337,9 +302,11 @@ export default {
             try {
                 this.dialogRemove = false;
                 this.response.active = false;
-                this.plan = {};
+                this.planItem = {
+                    fk_plan: this.plan
+                };
                 this.dialogForm = false;
-                this.plans = await PlanService.getAll();
+                this.planItems = await PlanService.getItemsByPlan(this.plan);
                 this.calculateRecords();
             } catch (error) {
                 console.log(error);
@@ -349,7 +316,7 @@ export default {
         },
         calculateRecords() {
             let amount = 0;
-            for (let i = 0; i < this.plans.length; i++) {
+            for (let i = 0; i < this.planItems.length; i++) {
                 amount++;
             }
             this.records = amount;
@@ -357,11 +324,15 @@ export default {
         async save() {
             if (!this.$refs.form.validate()) return;
             try {
-                if (this.plan.id_plan) {
-                    this.response.message = await PlanService.update(this.plan);
+                if (this.planItem.id_item_plan) {
+                    this.response.message = await PlanService.updatePlanItem(
+                        this.planItem
+                    );
                     this.response.type = 'success';
                 } else {
-                    this.response.message = await PlanService.save(this.plan);
+                    this.response.message = await PlanService.savePlanItem(
+                        this.planItem
+                    );
                     this.response.type = 'success';
                 }
             } catch (error) {
@@ -371,42 +342,17 @@ export default {
                 this.init();
                 this.response.active = true;
             }
-        }, // save()
-        getColor(status) {
-            switch (status) {
-                case 'ACTIVE':
-                    return 'primary';
-                case 'BLOCKED':
-                    return 'red';
-                case 'NEW':
-                    return 'green';
-                case 'UPDATE':
-                    return 'orange';
-                default:
-                    return 'default';
-            }
-        },
-        getText(status) {
-            switch (status) {
-                case 'ACTIVE':
-                    return 'Ativo';
-                case 'BLOCKED':
-                    return 'Bloqueado';
-                case 'NEW':
-                    return 'Novo';
-                case 'UPDATE':
-                    return 'Atualizar';
-                default:
-                    return 'default';
-            }
-        }
+        } // save()
     },
     created() {
         this.init();
     },
     watch: {
+        plan() {
+            this.init();
+        },
         dialogForm() {
-            if (!this.plan.id_plan) this.$refs.form?.reset();
+            if (!this.planItem.id_item_plan) this.$refs.form?.reset();
             this.$refs.form?.resetValidation();
         }
     }

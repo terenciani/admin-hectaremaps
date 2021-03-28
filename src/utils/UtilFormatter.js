@@ -38,6 +38,13 @@ export default class UtilFormatter {
         }
         return str;
     } // unMask
+    static numberToMoney(value = 0) {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(value);
+    } // numberToMoney
+
     static capitalizeCase(name) {
         var i, j, str, lowers;
         str = name.replace(/([^\W_]+[^\s-]*) */g, function(txt) {

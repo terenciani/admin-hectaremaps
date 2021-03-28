@@ -152,7 +152,6 @@
         </v-data-table>
         <v-dialog
             v-model="dialogForm"
-            persistent
             :fullscreen="$vuetify.breakpoint.smAndDown"
             max-width="600px"
         >
@@ -164,8 +163,8 @@
                         <v-icon @click="init">mdi-close</v-icon>
                     </v-btn>
                 </v-toolbar>
-                <v-card-text>
-                    <v-container class="py-5">
+                <v-card-text class="pb-0">
+                    <v-container class="pt-5">
                         <v-form ref="form" v-model="valid">
                             <v-row>
                                 <v-col
@@ -320,14 +319,14 @@
                     </v-container>
                 </v-card-text>
                 <v-card-actions bottom>
-                    <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
-                    <v-btn @click="init" color="error" text>
-                        Cancelar
-                    </v-btn>
-                    <v-btn color="success lighten-1" text @click="save">
-                        Salvar
-                    </v-btn>
+                    <v-container class="py-0 text-right">
+                        <v-btn @click="init" color="error" text>
+                            Cancelar
+                        </v-btn>
+                        <v-btn color="success lighten-1" text @click="save">
+                            Salvar
+                        </v-btn>
+                    </v-container>
                 </v-card-actions>
             </v-card>
         </v-dialog>
