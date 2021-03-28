@@ -123,7 +123,7 @@
                                     ></v-radio>
                                     <v-radio
                                         label="Na parte inferior da seção"
-                                        value="bottom"
+                                        value="end"
                                     ></v-radio>
                                 </v-radio-group>
                             </v-col>
