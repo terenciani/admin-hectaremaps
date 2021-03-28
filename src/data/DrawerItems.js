@@ -11,6 +11,16 @@ const adminItems = [
         to: '/profile'
     },
     {
+        icon: 'mdi-cart',
+        text: 'Contratar Plano',
+        to: '/plancontract'
+    },
+    {
+        icon: 'mdi-google-my-business',
+        text: 'Meus Planos',
+        to: '/myplans'
+    },
+    {
         icon: 'mdi-sitemap',
         text: 'Gerenciar Planos',
         to: '/plans'

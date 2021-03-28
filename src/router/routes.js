@@ -53,10 +53,17 @@ const routes = [
         path: '/plancontract',
         name: 'Contratar Plano',
         meta: {
-            access: 'USER',
             requiresAuth: true
         },
         component: () => import(`@/views/PlanContract.vue`)
+    },
+    {
+        path: '/myplans',
+        name: 'Meus Planos',
+        meta: {
+            requiresAuth: true
+        },
+        component: () => import(`@/views/ServiceRequest.vue`)
     },
     {
         path: '/servicerequest',

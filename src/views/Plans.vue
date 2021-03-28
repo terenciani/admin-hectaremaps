@@ -160,24 +160,34 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
-                                    <v-textarea
-                                        label="Observação"
-                                        v-model="plan.observation"
-                                    ></v-textarea>
-                                </v-col>
-                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
                                     <strong>Situação</strong>
                                     <v-checkbox
                                         v-model="plan.active"
                                         label="Ativo?"
                                         :value="plan.active"
                                     ></v-checkbox>
+                                </v-col>
+                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
                                     <strong>Site</strong>
                                     <v-checkbox
                                         v-model="plan.site_emphasis"
                                         label="Dar destaque neste plano?"
                                         :value="plan.site_emphasis"
                                     ></v-checkbox>
+                                </v-col>
+                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
+                                    <v-text-field
+                                        label="Quantidade de meses de vigência do plano para o cliente  *"
+                                        v-model="plan.months_of_validity"
+                                        type="number"
+                                        :rules="[requiredRule]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="6" class="py-xs-2 py-sm-0">
+                                    <v-textarea
+                                        label="Observação"
+                                        v-model="plan.observation"
+                                    ></v-textarea>
                                 </v-col>
                                 <v-col cols="12" class="py-xs-2 py-sm-0">
                                     <plan-items
