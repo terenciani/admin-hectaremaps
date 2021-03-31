@@ -178,6 +178,7 @@ export default {
             this.planContracted = await ContractService.getContractCurrentByUser();
             this.plansAndItems = await PlanService.getAllPlansAndItems();
             this.dialogConfirm = false;
+            this.response.active = false;
         }, // init
         numberDot(num) {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');

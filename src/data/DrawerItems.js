@@ -16,6 +16,11 @@ const adminItems = [
         to: '/plancontract'
     },
     {
+        icon: 'mdi-check-decagram',
+        text: 'Liberar Planos',
+        to: '/freeplans'
+    },
+    {
         icon: 'mdi-google-my-business',
         text: 'Meus Planos',
         to: '/myplans'

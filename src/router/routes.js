@@ -36,6 +36,15 @@ const routes = [
         component: () => import(`@/views/Users.vue`)
     },
     {
+        path: '/freeplans',
+        name: 'Liberação de Planos',
+        meta: {
+            access: 'ADMIN',
+            requiresAuth: true
+        },
+        component: () => import(`@/views/FreePlans.vue`)
+    },
+    {
         path: '/site',
         name: 'Modificar Site',
         meta: {
