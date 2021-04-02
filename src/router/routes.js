@@ -78,7 +78,7 @@ const routes = [
         path: '/servicerequest',
         name: 'Solicitações de Serviço',
         meta: {
-            access: 'USER',
+            access: 'ADMIN',
             requiresAuth: true
         },
         component: () => import(`@/views/ServiceRequest.vue`)

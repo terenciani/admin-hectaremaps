@@ -44,6 +44,11 @@ const adminItems = [
         icon: 'mdi-earth',
         text: 'Modificar Site',
         to: '/site'
+    },
+    {
+        icon: 'mdi-drone',
+        text: 'Solicitações de Serviço',
+        to: '/servicerequest'
     }
 ];
 
@@ -62,11 +67,6 @@ const userItems = [
         icon: 'mdi-cart',
         text: 'Contratar Plano',
         to: '/plancontract'
-    },
-    {
-        icon: 'mdi-drone',
-        text: 'Solicitações de Serviço',
-        to: '/servicerequest'
     }
 ];
 
