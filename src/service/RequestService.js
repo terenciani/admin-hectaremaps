@@ -13,6 +13,17 @@ export default class RequestService {
             throw error.response.data;
         }
     } // createRequest()
+    static async cancelRequest(requestId) {
+        try {
+            let response = await API.delete('request', {
+                data: { request: requestId }
+            });
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // cancelRequest()
+
     static async getRequestActivesByUser() {
         try {
             let user = AuthService.getLoggedUser();

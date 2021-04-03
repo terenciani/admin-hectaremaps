@@ -6,8 +6,11 @@
                 v-for="(progressInfo, index) in progressInfos"
                 :key="index"
             >
-                <span>{{ progressInfo.fileName }}</span>
+                <span v-if="progressInfo.percentage != 100">{{
+                    progressInfo.fileName
+                }}</span>
                 <v-progress-linear
+                    v-if="progressInfo.percentage != 100"
                     v-model="progressInfo.percentage"
                     color="light-blue"
                     height="25"
@@ -46,12 +49,6 @@
 
                         <v-stepper-step :complete="stepper > 2" step="2">
                             Selecionar Imagens
-                        </v-stepper-step>
-
-                        <v-divider></v-divider>
-
-                        <v-stepper-step step="3">
-                            Confirmar Solicitação
                         </v-stepper-step>
                     </v-stepper-header>
 
@@ -135,47 +132,28 @@
                                             v-if="imagesNames.length > 0"
                                             class="mx-auto"
                                         >
-                                            <v-list>
-                                                <v-subheader
-                                                    >Lista de Arquivos
-                                                    Enviados</v-subheader
+                                            <a
+                                                :href="
+                                                    `${host}/upload/request/${requestId}/${file.filename}`
+                                                "
+                                                target="_blank"
+                                                style="text-decoration: none"
+                                                v-for="(file,
+                                                index) in imagesNames"
+                                                :key="index"
+                                            >
+                                                <v-chip
+                                                    class="ma-2"
+                                                    color="success"
+                                                    outlined
                                                 >
-                                                <v-list-item-group
-                                                    color="primary"
-                                                >
-                                                    <v-list-item
-                                                        v-for="(file,
-                                                        index) in imagesNames"
-                                                        :key="index"
-                                                    >
-                                                        <v-list-item-content>
-                                                            <v-list-item-title
-                                                                class="mb-3"
-                                                            >
-                                                                <a
-                                                                    :href="
-                                                                        file.url
-                                                                    "
-                                                                    >{{
-                                                                        file.name
-                                                                    }}</a
-                                                                >
-                                                            </v-list-item-title>
-                                                            <v-list-item-subtitle>
-                                                                <img
-                                                                    :src="
-                                                                        file.url
-                                                                    "
-                                                                    :alt="
-                                                                        file.name
-                                                                    "
-                                                                    height="80px"
-                                                                />
-                                                            </v-list-item-subtitle>
-                                                        </v-list-item-content>
-                                                    </v-list-item>
-                                                </v-list-item-group>
-                                            </v-list>
+                                                    <v-icon left>
+                                                        mdi-eye
+                                                    </v-icon>
+
+                                                    {{ file.filename }}
+                                                </v-chip>
+                                            </a>
                                         </v-card>
                                     </v-col>
                                 </v-row>
@@ -192,32 +170,14 @@
                                         <v-btn
                                             color="primary"
                                             text
-                                            @click="createRequest()"
+                                            :disabled="imagesNames.length <= 0"
+                                            @click="dialogRedirect = true"
                                         >
-                                            Próximo
-                                            <v-icon class="mr-3"
-                                                >mdi-chevron-double-right</v-icon
-                                            >
+                                            Finalizar
                                         </v-btn>
                                     </v-col>
                                 </v-row>
                             </v-card>
-                        </v-stepper-content>
-
-                        <v-stepper-content step="3">
-                            <v-card
-                                class="mb-12"
-                                color="grey lighten-1"
-                                height="200px"
-                            ></v-card>
-
-                            <v-btn color="primary" @click="stepper = 1">
-                                Continue
-                            </v-btn>
-
-                            <v-btn text>
-                                Cancel
-                            </v-btn>
                         </v-stepper-content>
                     </v-stepper-items>
                 </v-stepper>
@@ -236,10 +196,20 @@
             @cancel="$router.push('/myrequests')"
         >
         </confirm-dialog>
+        <confirm-dialog
+            :show="dialogRedirect"
+            :message="
+                `Depois de finalizar você não poderá fazer alterações na solicitação!`
+            "
+            @confirm="$router.push('/myrequests')"
+            @cancel="dialogRedirect = false"
+        >
+        </confirm-dialog>
     </v-container>
 </template>
 
 <script>
+import config from './../../config';
 import ContractService from './../service/ContractService';
 import RequestService from './../service/RequestService';
 import PlanService from './../service/PlanService';
@@ -254,6 +224,8 @@ export default {
     name: 'ServiceRequest',
     data() {
         return {
+            dialogRedirect: false,
+            host: config.apiHost,
             stepper: 1,
             dialogConfirm: false,
             planContracted: {},
@@ -297,6 +269,21 @@ export default {
                 this.init();
             }
         },
+        async cancel() {
+            if (!this.requestId) return;
+            try {
+                await RequestService.cancelRequest(this.requestId);
+                this.$router.push('/');
+            } catch (error) {
+                this.message = {
+                    text:
+                        'Aconteceu um erro interno! Aguarde um momento e tente novamente',
+                    type: 'error',
+                    active: true
+                };
+                this.init();
+            }
+        },
         selectImages(images) {
             this.progressInfos = [];
             this.selectedImages = images;
@@ -321,12 +308,19 @@ export default {
                 );
             })
                 .then(response => {
-                    console.log(response);
-                    this.message = {
-                        text: 'Arquivos enviados com sucesso!',
-                        type: 'success',
-                        active: true
-                    };
+                    if (response.status == 500) {
+                        this.message = {
+                            text: 'Este arquivo já foi enviado!',
+                            type: 'warning',
+                            active: true
+                        };
+                    } else {
+                        this.message = {
+                            text: 'Arquivos enviados com sucesso!',
+                            type: 'success',
+                            active: true
+                        };
+                    }
                     return RequestService.getRequestImages(this.requestId);
                 })
                 .then(images => {
@@ -356,6 +350,8 @@ export default {
                 }
             } catch (error) {
                 console.log('Algo inesperado aconteceu');
+            } finally {
+                this.message.active = false;
             }
         }
     },
