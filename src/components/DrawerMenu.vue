@@ -44,26 +44,46 @@
                     alt="Logo"
                 />
                 <v-divider />
-                <v-list-item-group
-                    v-model="group"
-                    v-if="items.length > 0"
-                    active-class="deep-purple--text text--accent-4"
-                >
-                    <template v-for="item in items">
-                        <v-list-item
-                            :key="item.text"
-                            :to="item.to"
-                            @click="toolbarTitle = item.text"
-                        >
-                            <v-list-item-icon>
-                                <v-icon>{{ item.icon }}</v-icon>
-                            </v-list-item-icon>
+                <template v-for="item in items">
+                    <v-list-item
+                        v-if="!item.heading"
+                        :key="item.text"
+                        :to="item.to"
+                        @click="toolbarTitle = item.text"
+                    >
+                        <v-list-item-icon>
+                            <v-icon>{{ item.icon }}</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>{{ item.text }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-group
+                        :key="item.text"
+                        v-else
+                        :value="false"
+                        :prepend-icon="item.icon"
+                        active-class="deep-purple--text text--accent-4"
+                    >
+                        <template v-slot:activator>
                             <v-list-item-title>{{
                                 item.text
                             }}</v-list-item-title>
+                        </template>
+                        <v-list-item
+                            v-for="child in item.children"
+                            :key="child.text"
+                            :to="child.to"
+                            @click="toolbarTitle = child.text"
+                            class="ml-5"
+                        >
+                            <v-list-item-icon>
+                                <v-icon>{{ child.icon }}</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>{{
+                                child.text
+                            }}</v-list-item-title>
                         </v-list-item>
-                    </template>
-                </v-list-item-group>
+                    </v-list-group>
+                </template>
             </v-list>
             <div class="pa-2">
                 <v-menu offset-y transition="scale-transition">
@@ -100,13 +120,7 @@ export default {
             host: config.apiHost,
             drawer: true,
             group: null,
-            items: [
-                {
-                    icon: 'home',
-                    text: 'Dashboard',
-                    to: '/'
-                }
-            ]
+            items: []
         };
     },
     methods: {

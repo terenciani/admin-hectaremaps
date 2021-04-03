@@ -76,16 +76,16 @@ const routes = [
         meta: {
             requiresAuth: true
         },
-        component: () => import(`@/views/ServiceRequest.vue`)
+        component: () => import(`@/views/Services.vue`)
     },
     {
-        path: '/servicerequest',
+        path: '/myrequests',
         name: 'Solicitações de Serviço',
         meta: {
             access: 'ADMIN',
             requiresAuth: true
         },
-        component: () => import(`@/views/ServiceRequest.vue`)
+        component: () => import(`@/views/MyRequests.vue`)
     }
 ];
 export default routes;

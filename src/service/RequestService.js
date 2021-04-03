@@ -33,6 +33,15 @@ export default class RequestService {
             throw error.response.data;
         }
     } // createRequest()
+    static async getAllUserRequests() {
+        try {
+            let user = AuthService.getLoggedUser();
+            let response = await API.get('request/all/' + user.id_user);
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // getAllUserRequests()
     static async getRequestImages(request) {
         try {
             let response = await API.get('request/images/' + request);

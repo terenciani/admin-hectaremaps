@@ -55,7 +55,7 @@
                     <v-stepper-items>
                         <v-stepper-content step="1">
                             <v-card>
-                                <v-row>
+                                <v-row class="px-5">
                                     <v-col
                                         cols="12"
                                         sm="6"
@@ -193,7 +193,7 @@
             :show="dialogConfirm"
             :message="`Você já possui solicitações abertas! `"
             @confirm="dialogConfirm = false"
-            @cancel="$router.push('/myrequests')"
+            @cancel="$emit('list')"
         >
         </confirm-dialog>
         <confirm-dialog
@@ -201,7 +201,7 @@
             :message="
                 `Depois de finalizar você não poderá fazer alterações na solicitação!`
             "
-            @confirm="$router.push('/myrequests')"
+            @confirm="$emit('list')"
             @cancel="dialogRedirect = false"
         >
         </confirm-dialog>

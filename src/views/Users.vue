@@ -13,10 +13,10 @@
                         <v-col
                             cols="12"
                             sm="6"
-                            md="4"
+                            md="3"
                             class="d-flex align-content-center"
                         >
-                            <h2>Gestão de Usuários</h2>
+                            <h3>Gestão de Usuários</h3>
                             <v-spacer></v-spacer>
                             <v-divider
                                 class="mx-4 d-none d-sm-flex"
@@ -34,7 +34,7 @@
                                 hide-details
                             ></v-text-field>
                         </v-col>
-                        <v-col md="3" class="d-none d-md-flex">
+                        <v-col md="4" class="d-none d-md-flex">
                             <v-btn
                                 color="primary"
                                 dark
