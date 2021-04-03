@@ -206,6 +206,7 @@ export default {
                     this.response.type = 'success';
                     this.$refs.loginForm.resetValidation();
                     this.$refs.loginForm.reset();
+                    location.reload();
                 } else this.response.type = 'warning';
             } catch (error) {
                 console.log(error);
@@ -215,7 +216,6 @@ export default {
             } finally {
                 this.loadingDialog = false;
                 this.response.active = true;
-                location.reload();
             }
         }
     },

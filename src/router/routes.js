@@ -4,6 +4,10 @@ const routes = [
         name: 'Acesso não autorizado'
     },
     {
+        path: '/expired',
+        name: 'Sessão expirada'
+    },
+    {
         path: '/',
         name: 'Início',
         component: () => import(`@/views/Home.vue`)

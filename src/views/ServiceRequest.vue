@@ -349,7 +349,11 @@ export default {
                     if (this.requests.length > 0) this.dialogConfirm = true;
                 }
             } catch (error) {
-                console.log('Algo inesperado aconteceu');
+                this.message = {
+                    text: 'Algo inesperado aconteceu!',
+                    type: 'error',
+                    active: true
+                };
             } finally {
                 this.message.active = false;
             }

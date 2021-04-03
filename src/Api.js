@@ -1,10 +1,22 @@
 import axios from 'axios';
 import config from '../config';
-
-export default axios.create({
+const instance = axios.create({
     baseURL: config.apiHost
-    /*headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json',
-  },*/
 });
+
+instance.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => {
+        const { response } = error;
+
+        if (response.status === 498) {
+            // Sessão expirada
+            console.log('asd');
+            window.location = 'expired';
+        }
+    }
+);
+
+export default instance;

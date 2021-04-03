@@ -11,12 +11,35 @@
                 <v-layout fill-height justify-center align-center>
                     <v-container>
                         <v-col cols="12" class="text-center">
-                            <v-icon size="60px">{{ errorSection.icon }}</v-icon>
+                            <v-icon size="60px">{{
+                                unauthorizedSection.icon
+                            }}</v-icon>
                         </v-col>
                         <v-col cols="12" class="text-center">
                             <span class="display-1">{{
-                                errorSection.text
+                                unauthorizedSection.text
                             }}</span>
+                        </v-col>
+                    </v-container>
+                </v-layout>
+            </v-main>
+            <v-main v-else-if="isExpired">
+                <v-layout fill-height justify-center align-center>
+                    <v-container>
+                        <v-col cols="12" class="text-center">
+                            <v-icon size="60px">{{
+                                expiredSection.icon
+                            }}</v-icon>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                            <span class="display-1">{{
+                                expiredSection.text
+                            }}</span>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                            <v-btn color="info" outlined large @click="logout"
+                                >Fazer Login</v-btn
+                            >
                         </v-col>
                     </v-container>
                 </v-layout>
@@ -48,15 +71,24 @@ export default {
     data() {
         return {
             loggedLocal: false,
-            errorSection: {
+            unauthorizedSection: {
                 icon: 'mdi-link-lock',
                 text: 'Acesso não autorizado'
+            },
+            expiredSection: {
+                icon: 'mdi-clock',
+                text: 'Sessão Expirada'
             }
         };
     },
     methods: {
         init() {
             this.loggedLocal = false;
+        },
+        async logout() {
+            await AuthService.removeUserFromLocalStorage;
+            this.$store.commit('loggoutUser');
+            this.$router.push('/');
         }
     },
     computed: {
@@ -65,6 +97,9 @@ export default {
         },
         isUnauthorized() {
             return this.$route.path == '/unauthorized' ? true : false;
+        },
+        isExpired() {
+            return this.$route.path == '/expired' ? true : false;
         }
     },
     beforeMount() {
