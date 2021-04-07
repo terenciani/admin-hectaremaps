@@ -8,7 +8,12 @@
                     label="Ativar Edição"
                 ></v-checkbox>
             </v-col>
-            <v-col cols="12" md="6" class="text-center text-md-right">
+            <v-col
+                cols="12"
+                md="6"
+                class="text-center text-md-right"
+                v-if="editing"
+            >
                 <v-btn
                     outlined
                     large

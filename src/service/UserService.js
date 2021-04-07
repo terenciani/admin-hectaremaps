@@ -1,9 +1,30 @@
 'use strict';
 import API from '../Api';
 import UtilFormatter from '../utils/UtilFormatter';
+import AuthService from './AuthService';
+
 import md5 from 'md5';
+import axios from 'axios';
 
 export default class UserService {
+    static async searchCEP(cep) {
+        try {
+            const { data } = await axios.get(
+                `https://viacep.com.br/ws/${cep}/json/`
+            );
+            return {
+                address: data.logradouro,
+                complement: data.complemento,
+                district: data.bairro,
+                city: data.localidade,
+                uf: data.uf
+            };
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
     static async getAll() {
         try {
             let response = await API.get('users');
@@ -12,6 +33,16 @@ export default class UserService {
             throw error.response.data;
         }
     } // getAll()
+    static async getUserData() {
+        try {
+            let user = await AuthService.getLoggedUser();
+            let response = await API.get('users/' + user.id_user);
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // getUserData()
+
     static async remove(user) {
         try {
             let response = await API.delete('users', { data: user });
@@ -36,6 +67,30 @@ export default class UserService {
             throw 'Ops! Aconteceu um erro interno, entre em contato conosco.';
         }
     } // update()
+
+    static async registrationUpdate(userData) {
+        let preparedUser = {
+            email: userData.email,
+            name: await UtilFormatter.capitalizeCase(userData.name),
+            phone: await UtilFormatter.unMaskPhone(userData.phone),
+            lastname: await UtilFormatter.capitalizeCase(userData.lastname),
+            cpf: userData.cpf,
+            cep: userData.cep,
+            address: userData.address,
+            number: userData.number,
+            complement: userData.complement,
+            district: userData.district,
+            city: userData.city,
+            uf: userData.uf
+        };
+        try {
+            let response = await API.put('users/registration', preparedUser);
+            return response.data;
+        } catch (error) {
+            throw 'Ops! Aconteceu um erro interno, entre em contato conosco.';
+        }
+    } // update()
+
     static async save(userData) {
         let preparedUser = {
             email: userData.email.toLowerCase(),
