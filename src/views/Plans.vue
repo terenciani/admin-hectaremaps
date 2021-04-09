@@ -236,12 +236,19 @@
             "
         >
         </confirm-dialog>
-        <default-snackbar
-            :show="response.active"
-            :type="response.type"
-            :message="response.message"
-            @close="response.active = false"
-        />
+        <v-snackbar v-model="response.active" :color="response.type">
+            {{ response.message }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="response.type"
+                    text
+                    v-bind="attrs"
+                    @click="response.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 
@@ -250,10 +257,9 @@ import Currency from '../utils/Currency';
 import UtilFormatter from '../utils/UtilFormatter';
 import PlanService from '@/service/PlanService';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
-import DefaultSnackbar from '@/components/DefaultSnackbar';
 import PlanItems from '@/components/PlanItems';
 export default {
-    components: { ConfirmDialog, DefaultSnackbar, PlanItems },
+    components: { ConfirmDialog, PlanItems },
     name: 'Plans',
     data() {
         return {

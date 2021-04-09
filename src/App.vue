@@ -87,8 +87,7 @@ export default {
         },
         async logout() {
             await AuthService.removeUserFromLocalStorage;
-            this.$store.commit('loggoutUser');
-            this.$router.push('/');
+            this.$store.dispatch('logoffUser');
         }
     },
     computed: {

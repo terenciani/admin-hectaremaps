@@ -123,12 +123,19 @@
             "
         >
         </confirm-dialog>
-        <default-snackbar
-            :show="response.active"
-            :type="response.type"
-            :message="response.message"
-            @close="response.active = false"
-        />
+        <v-snackbar v-model="response.active" :color="response.type">
+            {{ response.message }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="response.type"
+                    text
+                    v-bind="attrs"
+                    @click="response.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-container>
 </template>
 
@@ -137,10 +144,9 @@ import PlanService from '../service/PlanService';
 import ContractService from '../service/ContractService';
 import UtilFormatter from '../utils/UtilFormatter';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
-import DefaultSnackbar from '@/components/DefaultSnackbar';
 
 export default {
-    components: { ConfirmDialog, DefaultSnackbar },
+    components: { ConfirmDialog },
     name: 'PlanContract',
     data: () => ({
         plansAndItems: [],

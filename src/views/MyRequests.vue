@@ -126,12 +126,6 @@
             </v-data-table>
         </v-container>
         <service-request @list="init" v-else></service-request>
-        <default-snackbar
-            :show="message.active"
-            :type="message.type"
-            :message="message.text"
-            @close="message.active = false"
-        ></default-snackbar>
         <confirm-dialog
             :show="dialogRedirect"
             :message="
@@ -141,18 +135,29 @@
             @cancel="dialogRedirect = false"
         >
         </confirm-dialog>
+        <v-snackbar v-model="message.active" :color="message.type">
+            {{ message.text }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="message.type"
+                    text
+                    v-bind="attrs"
+                    @click="message.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 
 <script>
-import DefaultSnackbar from './../components/DefaultSnackbar';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
 import RequestService from '../service/RequestService';
 import ServiceRequest from '../components/ServiceRequest.vue';
 import UtilFormatter from '../utils/UtilFormatter';
 export default {
     components: {
-        DefaultSnackbar,
         ConfirmDialog,
         ServiceRequest
     },

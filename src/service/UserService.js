@@ -106,4 +106,17 @@ export default class UserService {
             throw 'Não foi possível efetuar o cadastro. Tente mais tarde!';
         }
     } // signUp()
+    static async updateEmail(newEmail) {
+        try {
+            let user = await AuthService.getLoggedUser();
+
+            let message = await API.post(
+                'emailupdate',
+                Object.assign({}, user, { newEmail: newEmail })
+            );
+            return message.data;
+        } catch (error) {
+            throw 'Não foi possível efetuar o cadastro. Tente mais tarde!';
+        }
+    } // signUp()
 } // class

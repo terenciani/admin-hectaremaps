@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-row>
-            <v-col cols="12" md="6">
+        <v-row v-if="user.id_user">
+            <v-col cols="12" sm="4" class="mb-xs-0">
                 <v-checkbox
                     v-model="editing"
                     :disabled="loadingDialog || editing"
@@ -10,8 +10,8 @@
             </v-col>
             <v-col
                 cols="12"
-                md="6"
-                class="text-center text-md-right"
+                sm="8"
+                class="text-center text-sm-right"
                 v-if="editing"
             >
                 <v-btn
@@ -20,7 +20,7 @@
                     :disabled="loadingDialog || !editing"
                     :loading="loadingDialog"
                     dark
-                    class="mr-5"
+                    class="mr-5 mb-5"
                     color="error"
                     @click="init"
                 >
@@ -32,6 +32,7 @@
                 <v-btn
                     tile
                     large
+                    class="mb-5"
                     :disabled="loadingDialog || !editing"
                     :loading="loadingDialog"
                     dark
@@ -45,7 +46,7 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" v-if="user.id_user">
             <v-expansion-panels>
                 <v-expansion-panel>
                     <v-expansion-panel-header
@@ -107,6 +108,24 @@
                                     v-model="user.email"
                                     label="E-mail"
                                 ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-btn
+                                    color="warning"
+                                    x-large
+                                    block
+                                    outlined
+                                    @click="
+                                        updateEmailDialog = true;
+                                        newEmail = '';
+                                    "
+                                    :disabled="loadingDialog || !editing"
+                                >
+                                    <v-icon class="mr-5">
+                                        mdi-email
+                                    </v-icon>
+                                    Alterar E-mail
+                                </v-btn>
                             </v-col>
                         </v-row>
                     </v-expansion-panel-content>
@@ -203,31 +222,86 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </v-form>
+        <v-dialog
+            v-model="updateEmailDialog"
+            transition="dialog-transition"
+            max-width="400"
+        >
+            <v-card shaped>
+                <v-card-title class="text-center d-block">
+                    <v-icon color="warning" large
+                        >mdi-alert-circle-outline</v-icon
+                    >
+                    <p>Tem certeza disso?</p>
+                </v-card-title>
+                <v-form ref="formEmail" v-model="validEmail">
+                    <v-card-text class="text-justify">
+                        <v-text-field
+                            outlined
+                            type="email"
+                            :rules="emailRules"
+                            required
+                            v-model="newEmail"
+                            label="Novo e-mail"
+                        ></v-text-field>
+                        <v-alert
+                            type="warning"
+                            outlined
+                            dismissible
+                            :value="true"
+                        >
+                            Será enviado um e-mail de confirmação antes da troca
+                            ser efetivada.
+                        </v-alert>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="init" color="error" text>
+                            Cancelar
+                        </v-btn>
+                        <v-btn
+                            color="success lighten-1"
+                            text
+                            @click="updateEmail"
+                        >
+                            Confirmar
+                        </v-btn>
+                    </v-card-actions>
+                </v-form>
+            </v-card>
+        </v-dialog>
         <loading-dialog
             :active="loadingDialog"
             message="Aguarde! Os dados estão sendo enviados"
         />
-        <default-snackbar
-            :show="response.active"
-            :type="response.type"
-            :message="response.message"
-            @close="response.active = false"
-        />
+        <v-snackbar v-model="response.active" :color="response.type">
+            {{ response.message }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="response.type"
+                    text
+                    v-bind="attrs"
+                    @click="response.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 
 <script>
 import UserService from '../service/UserService';
-import DefaultSnackbar from '@/components/DefaultSnackbar';
 import LoadingDialog from '@/components/LoadingDialog';
 export default {
     name: 'Profile',
     components: {
-        DefaultSnackbar,
         LoadingDialog
     },
     data() {
         return {
+            updateEmailDialog: false,
+            newEmail: '',
             user: {
                 address: '',
                 complement: '',
@@ -237,6 +311,7 @@ export default {
             },
             editing: false,
             valid: true,
+            validEmail: true,
             loadingDialog: false,
             response: {
                 message: '',
@@ -278,13 +353,62 @@ export default {
                 /\d/
             ],
             cepMask: [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/],
+            emailRules: [
+                v => !!v || 'O e-mail é obrigatório',
+                v => /.+@.+\..+/.test(v) || 'Informe um e-mail válido.'
+            ],
             cepData: {}
         };
     },
     methods: {
+        async updateEmail() {
+            if (!this.$refs.formEmail.validate()) return;
+            try {
+                let resp = await UserService.updateEmail(this.newEmail);
+                if (resp.status == 422) {
+                    this.response = {
+                        message: resp.message,
+                        type: 'error',
+                        active: true
+                    };
+                } else {
+                    this.response = {
+                        message: resp.message,
+                        type: 'info',
+                        active: true
+                    };
+                    this.$refs.formEmail.resetValidation();
+                    this.$refs.formEmail.reset();
+                    this.updateEmailDialog = false
+                }
+            } catch (error) {
+                this.response = {
+                    message:
+                        'Aconteceu um erro interno! Verifique sua conexão com a internet. Caso o problema persista, entre em contato conosco.',
+                    type: 'error',
+                    active: true
+                };
+            }
+        },
         async init() {
+            this.loadingDialog = true;
+            this.updateEmailDialog = false;
             this.editing = false;
-            this.user = await UserService.getUserData();
+            this.valid = true;
+            this.validEmail = true;
+            this.response.active = false;
+            try {
+                this.user = await UserService.getUserData();
+            } catch (error) {
+                this.response = {
+                    message:
+                        'Aconteceu um erro interno! Verifique sua conexão com a internet. Caso o problema persista, entre em contato conosco.',
+                    type: 'error',
+                    active: true
+                };
+            } finally {
+                this.loadingDialog = false;
+            }
         },
         async save() {
             if (!this.$refs.form.validate()) {

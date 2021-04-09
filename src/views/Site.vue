@@ -356,12 +356,19 @@
             :active="loadingDialog"
             message="Aguarde! Os dados estão sendo enviados"
         />
-        <default-snackbar
-            :show="response.active"
-            :type="response.type"
-            :message="response.message"
-            @close="response.active = false"
-        />
+        <v-snackbar v-model="response.active" :color="response.type">
+            {{ response.message }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="response.type"
+                    text
+                    v-bind="attrs"
+                    @click="response.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 
@@ -369,13 +376,11 @@
 import DataService from '@/service/DataService';
 import UploadImageSite from '@/components/UploadImageSite';
 import UploadVideoSite from '@/components/UploadVideoSite';
-import DefaultSnackbar from '@/components/DefaultSnackbar';
 import LoadingDialog from '@/components/LoadingDialog';
 export default {
     name: 'Site',
     components: {
         UploadImageSite,
-        DefaultSnackbar,
         LoadingDialog,
         UploadVideoSite
     },

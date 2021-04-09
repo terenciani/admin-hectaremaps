@@ -10,13 +10,16 @@ const routes = [
     {
         path: '/',
         name: 'Início',
+        meta: {
+            access: ['USER'],
+            requiresAuth: true
+        },
         component: () => import(`@/views/Home.vue`)
     },
     {
         path: '/plans',
         name: 'Gestão de Planos',
         meta: {
-            access: 'ADMIN',
             requiresAuth: true
         },
         component: () => import(`@/views/Plans.vue`)
@@ -25,7 +28,6 @@ const routes = [
         path: '/services',
         name: 'Gestão de Serviços',
         meta: {
-            access: 'ADMIN',
             requiresAuth: true
         },
         component: () => import(`@/views/Services.vue`)
@@ -34,7 +36,6 @@ const routes = [
         path: '/users',
         name: 'Gestão de Usuários',
         meta: {
-            access: 'ADMIN',
             requiresAuth: true
         },
         component: () => import(`@/views/Users.vue`)
@@ -43,7 +44,6 @@ const routes = [
         path: '/freeplans',
         name: 'Liberação de Planos',
         meta: {
-            access: 'ADMIN',
             requiresAuth: true
         },
         component: () => import(`@/views/FreePlans.vue`)
@@ -52,7 +52,6 @@ const routes = [
         path: '/site',
         name: 'Modificar Site',
         meta: {
-            access: 'ADMIN',
             requiresAuth: true
         },
         component: () => import(`@/views/Site.vue`)
@@ -60,12 +59,17 @@ const routes = [
     {
         path: '/profile',
         name: 'Modificar Perfil',
+        meta: {
+            access: ['USER'],
+            requiresAuth: true
+        },
         component: () => import(`@/views/Profile.vue`)
     },
     {
         path: '/plancontract',
         name: 'Contratar Plano',
         meta: {
+            access: ['USER'],
             requiresAuth: true
         },
         component: () => import(`@/views/PlanContract.vue`)
@@ -74,6 +78,7 @@ const routes = [
         path: '/myplans',
         name: 'Meus Planos',
         meta: {
+            access: ['USER'],
             requiresAuth: true
         },
         component: () => import(`@/views/Services.vue`)
@@ -82,7 +87,7 @@ const routes = [
         path: '/myrequests',
         name: 'Solicitações de Serviço',
         meta: {
-            access: 'ADMIN',
+            access: ['USER'],
             requiresAuth: true
         },
         component: () => import(`@/views/MyRequests.vue`)

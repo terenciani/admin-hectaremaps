@@ -58,22 +58,27 @@
             </v-row>
         </v-col>
 
-        <default-snackbar
-            :show="response.active"
-            :type="response.type"
-            :message="response.message"
-            @close="response.active = false"
-        ></default-snackbar>
+        <v-snackbar v-model="response.active" :color="response.type">
+            {{ response.message }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="response.type"
+                    text
+                    v-bind="attrs"
+                    @click="response.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-row>
 </template>
 <script>
 import config from '../../config';
 import vueVideo from 'vue-video';
 import UploadService from '@/service/UploadService';
-import DefaultSnackbar from './DefaultSnackbar';
 export default {
     components: {
-        DefaultSnackbar,
         vueVideo
     },
     data() {

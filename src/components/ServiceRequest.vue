@@ -183,12 +183,6 @@
                 </v-stepper>
             </v-col>
         </v-row>
-        <default-snackbar
-            :show="message.active"
-            :type="message.type"
-            :message="message.text"
-            @close="message.active = false"
-        ></default-snackbar>
         <confirm-dialog
             :show="dialogConfirm"
             :message="`Você já possui solicitações abertas! `"
@@ -205,6 +199,19 @@
             @cancel="dialogRedirect = false"
         >
         </confirm-dialog>
+        <v-snackbar v-model="response.active" :color="response.type">
+            {{ response.message }}
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :class="response.type"
+                    text
+                    v-bind="attrs"
+                    @click="response.active = false"
+                >
+                    Fechar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-container>
 </template>
 
@@ -214,11 +221,9 @@ import ContractService from './../service/ContractService';
 import RequestService from './../service/RequestService';
 import PlanService from './../service/PlanService';
 import UploadService from './../service/UploadService';
-import DefaultSnackbar from './../components/DefaultSnackbar';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
 export default {
     components: {
-        DefaultSnackbar,
         ConfirmDialog
     },
     name: 'ServiceRequest',

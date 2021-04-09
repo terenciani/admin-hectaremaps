@@ -51,6 +51,16 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        logoffUser(context) {
+            try {
+                AuthService.removeUserFromLocalStorage();
+                API.defaults.headers['x-access-token'] = '';
+                context.commit('loggoutUser');
+                location.reload();
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 };
