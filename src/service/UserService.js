@@ -118,5 +118,18 @@ export default class UserService {
         } catch (error) {
             throw 'Não foi possível efetuar o cadastro. Tente mais tarde!';
         }
-    } // signUp()
+    } // updateEmail()
+    static async updatePassword(password) {
+        try {
+            let user = await AuthService.getLoggedUser();
+
+            let message = await API.post(
+                'passwordupdate',
+                Object.assign({}, user, { newPassword: md5(password.new) })
+            );
+            return message.data.message;
+        } catch (error) {
+            throw 'Não foi possível atualizar a senha. Tente mais tarde!';
+        }
+    } // updateEmail()
 } // class

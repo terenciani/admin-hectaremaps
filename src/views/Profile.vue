@@ -222,6 +222,79 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </v-form>
+        <v-form ref="formPass" v-model="validPass" v-if="user.id_user">
+            <v-expansion-panels class="mt-5">
+                <v-expansion-panel>
+                    <v-expansion-panel-header
+                        >Segurança</v-expansion-panel-header
+                    >
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    :append-icon="
+                                        show ? 'mdi-eye' : 'mdi-eye-off'
+                                    "
+                                    :disabled="loadingDialog || !editing"
+                                    :type="show ? 'text' : 'password'"
+                                    :rules="currentRules"
+                                    hint="A senha deve ter no mínimo 8 characteres."
+                                    label="Senha de acesso atual*"
+                                    v-model="password.current"
+                                    required
+                                    @click:append="show = !show"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    :append-icon="
+                                        show1 ? 'mdi-eye' : 'mdi-eye-off'
+                                    "
+                                    :type="show1 ? 'text' : 'password'"
+                                    :rules="passwordRules"
+                                    :disabled="loadingDialog || !editing"
+                                    hint="A senha deve ter no mínimo 8 characteres."
+                                    label="Nova Senha *"
+                                    v-model="password.new"
+                                    required
+                                    @click:append="show1 = !show1"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    :append-icon="
+                                        show2 ? 'mdi-eye' : 'mdi-eye-off'
+                                    "
+                                    :type="show2 ? 'text' : 'password'"
+                                    :rules="confirmRules"
+                                    :disabled="loadingDialog || !editing"
+                                    hint="A senha deve ter no mínimo 8 characteres."
+                                    label="Confirme a nova senha*"
+                                    v-model="password.confirm"
+                                    required
+                                    @click:append="show2 = !show2"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-btn
+                                    color="warning"
+                                    x-large
+                                    block
+                                    outlined
+                                    @click="updatePassword"
+                                    :disabled="loadingDialog || !editing"
+                                >
+                                    <v-icon class="mr-5">
+                                        mdi-security
+                                    </v-icon>
+                                    Alterar Senha
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </v-form>
         <v-dialog
             v-model="updateEmailDialog"
             transition="dialog-transition"
@@ -272,7 +345,7 @@
         </v-dialog>
         <loading-dialog
             :active="loadingDialog"
-            message="Aguarde! Os dados estão sendo enviados"
+            message="Aguarde! As informações estão sendo carregadas."
         />
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
@@ -291,6 +364,7 @@
 </template>
 
 <script>
+import md5 from 'md5';
 import UserService from '../service/UserService';
 import LoadingDialog from '@/components/LoadingDialog';
 export default {
@@ -311,6 +385,7 @@ export default {
             },
             editing: false,
             valid: true,
+            validPass: true,
             validEmail: true,
             loadingDialog: false,
             response: {
@@ -357,7 +432,28 @@ export default {
                 v => !!v || 'O e-mail é obrigatório',
                 v => /.+@.+\..+/.test(v) || 'Informe um e-mail válido.'
             ],
-            cepData: {}
+            cepData: {},
+            show: false,
+            show1: false,
+            show2: false,
+            password: {},
+            currentRules: [
+                v => !!v || 'A senha é obrigatória.',
+                v =>
+                    (v && v.length >= 8) ||
+                    'A senha deve ter no mínimo 8 characteres.',
+                v => (v && md5(v) == this.user.password) || 'As senhas não conferem.'
+            ],
+            passwordRules: [
+                v => !!v || 'A senha é obrigatória.',
+                v =>
+                    (v && v.length >= 8) ||
+                    'A senha deve ter no mínimo 8 characteres.',
+            ],
+            confirmRules: [
+                v => !!v || 'A confirmação de senha é obrigatória.',
+                v => (v && v == this.password.new) || 'As senhas não conferem.'
+            ]
         };
     },
     methods: {
@@ -426,6 +522,32 @@ export default {
                 this.response.type = 'success';
                 this.$refs.form.resetValidation();
                 this.$refs.form.reset();
+                this.init();
+            } catch (error) {
+                this.response.message = error;
+                this.response.type = 'error';
+            } finally {
+                this.loadingDialog = false;
+                this.response.active = true;
+            }
+        },
+        async updatePassword() {
+            if (!this.$refs.formPass.validate()) {
+                this.response = {
+                    message: 'Todos os campos em destaque são obrigatórios',
+                    type: 'error',
+                    active: true
+                }
+                return;
+            }
+            this.loadingDialog = true;
+            try {
+                this.response.message = await UserService.updatePassword(
+                    this.password
+                );
+                this.response.type = 'success';
+                this.$refs.formPass.resetValidation();
+                this.$refs.formPass.reset();
                 this.init();
             } catch (error) {
                 this.response.message = error;
