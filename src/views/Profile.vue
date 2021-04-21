@@ -442,13 +442,15 @@ export default {
                 v =>
                     (v && v.length >= 8) ||
                     'A senha deve ter no mínimo 8 characteres.',
-                v => (v && md5(v) == this.user.password) || 'As senhas não conferem.'
+                v =>
+                    (v && md5(v) == this.user.password) ||
+                    'As senhas não conferem.'
             ],
             passwordRules: [
                 v => !!v || 'A senha é obrigatória.',
                 v =>
                     (v && v.length >= 8) ||
-                    'A senha deve ter no mínimo 8 characteres.',
+                    'A senha deve ter no mínimo 8 characteres.'
             ],
             confirmRules: [
                 v => !!v || 'A confirmação de senha é obrigatória.',
@@ -475,7 +477,7 @@ export default {
                     };
                     this.$refs.formEmail.resetValidation();
                     this.$refs.formEmail.reset();
-                    this.updateEmailDialog = false
+                    this.updateEmailDialog = false;
                 }
             } catch (error) {
                 this.response = {
@@ -537,7 +539,7 @@ export default {
                     message: 'Todos os campos em destaque são obrigatórios',
                     type: 'error',
                     active: true
-                }
+                };
                 return;
             }
             this.loadingDialog = true;

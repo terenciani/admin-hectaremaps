@@ -17,9 +17,9 @@ export default class PlanService {
             throw 'Não foi possível efetuar o cadastro. Tente mais tarde!';
         }
     } // save()
-    static async remove(user) {
+    static async remove(plan) {
         try {
-            let response = await API.delete('plan', { data: user });
+            let response = await API.delete('plan', { data: plan });
             return response.data;
         } catch (error) {
             throw 'Ops! Aconteceu um erro interno, entre em contato conosco.';

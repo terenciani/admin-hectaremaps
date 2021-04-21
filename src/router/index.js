@@ -18,8 +18,12 @@ router.beforeEach((to, from, next) => {
         if (user == null) {
             // usuario é nulo?
             next({ path: '/' });
-        } else if (!user.role == 'ADMIN'){
-            if (to.matched.some(record => !record.meta.access.includes(user.role))) {
+        } else if (!user.role == 'ADMIN') {
+            if (
+                to.matched.some(
+                    record => !record.meta.access.includes(user.role)
+                )
+            ) {
                 // usuario NÃO tem permissão?
                 next({ path: '/unauthorized' });
             } else next();
