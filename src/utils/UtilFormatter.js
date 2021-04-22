@@ -64,4 +64,17 @@ export default class UtilFormatter {
 
         return str;
     }
+    static numberDot(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    } // numberDot
+
+    static spaceTransform(space) {
+        if (space < 1024) return space + ' Mb';
+        return (
+            (space / 1024)
+                .toFixed(2)
+                .toString()
+                .replace('.', ',') + ' Gb'
+        );
+    } // spaceTransform
 } // class

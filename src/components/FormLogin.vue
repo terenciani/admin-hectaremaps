@@ -194,19 +194,19 @@ export default {
                 if (resp.status == 200 && resp.user && resp.user.id_user) {
                     await AuthService.setUserInLocalStorage(resp.user);
                     this.$store.dispatch('loadLoggedUser');
+                    console.log(resp.user.status);
                     if (
                         resp.user.status == 'UPDATE' ||
                         resp.user.status == 'NEW'
                     ) {
-                        this.$router.push('/profile');
+                        this.$router.go('/profile');
                     } else {
-                        this.$router.push(this.defaultRoute);
+                        this.$router.go(this.defaultRoute);
                     }
 
                     this.response.type = 'success';
                     this.$refs.loginForm.resetValidation();
                     this.$refs.loginForm.reset();
-                    location.reload();
                 } else this.response.type = 'warning';
             } catch (error) {
                 console.log(error);

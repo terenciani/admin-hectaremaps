@@ -75,13 +75,13 @@ const routes = [
         component: () => import(`@/views/PlanContract.vue`)
     },
     {
-        path: '/myplans',
-        name: 'Meus Planos',
+        path: '/mycontracts',
+        name: 'Meus Planos Contratados',
         meta: {
             access: ['USER'],
             requiresAuth: true
         },
-        component: () => import(`@/views/Services.vue`)
+        component: () => import(`@/views/MyContracts.vue`)
     },
     {
         path: '/myrequests',

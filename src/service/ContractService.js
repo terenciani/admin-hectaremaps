@@ -19,9 +19,22 @@ export default class ContractService {
         }
     } // getAll()
 
+    static async cancelContract(planContract) {
+        try {
+            let response = await API.delete('contract/delete', {
+                data: planContract
+            });
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // cancelContract()
+
     static async finish(contract) {
         try {
-            let response = await API.delete('contract', { data: contract });
+            let response = await API.delete('contract', {
+                data: contract
+            });
             return response.data;
         } catch (error) {
             throw error.response.data;
@@ -31,7 +44,10 @@ export default class ContractService {
     static async contract(plan) {
         try {
             let user = AuthService.getLoggedUser();
-            let response = await API.post('contract', { plan, user });
+            let response = await API.post('contract', {
+                plan,
+                user
+            });
             return response.data;
         } catch (error) {
             throw error.response.data;
@@ -46,4 +62,14 @@ export default class ContractService {
             throw error.response.data;
         }
     } // getContractCurrentByUser()
+
+    static async getAllUserContracts() {
+        try {
+            let user = AuthService.getLoggedUser();
+            let response = await API.get('contract/all/' + user.id_user);
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // getAllUserContracts()
 } // class

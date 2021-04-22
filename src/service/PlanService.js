@@ -9,6 +9,7 @@ export default class PlanService {
             throw error.response.data;
         }
     } // getAll()
+
     static async save(plan) {
         try {
             let message = await API.post('plan', plan);
@@ -19,7 +20,9 @@ export default class PlanService {
     } // save()
     static async remove(plan) {
         try {
-            let response = await API.delete('plan', { data: plan });
+            let response = await API.delete('plan', {
+                data: plan
+            });
             return response.data;
         } catch (error) {
             throw 'Ops! Aconteceu um erro interno, entre em contato conosco.';
@@ -67,7 +70,9 @@ export default class PlanService {
     } // getItemsByPlan()
     static async removePlanItem(planItem) {
         try {
-            let response = await API.delete('planitems', { data: planItem });
+            let response = await API.delete('planitems', {
+                data: planItem
+            });
             return response.data;
         } catch (error) {
             throw 'Ops! Aconteceu um erro interno, entre em contato conosco.';

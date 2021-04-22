@@ -71,6 +71,14 @@
             <template v-slot:[`item.price`]="{ item }">
                 {{ utilFormatter.numberToMoney(item.price) }}
             </template>
+            <template v-slot:[`item.storage_space`]="{ item }">
+                {{ utilFormatter.spaceTransform(item.storage_space) }}
+            </template>
+
+            <template v-slot:[`item.number_of_images`]="{ item }">
+                {{ utilFormatter.numberDot(item.number_of_images) }}
+            </template>
+
             <template v-slot:[`item.active`]="{ item }">
                 <v-chip
                     class="ma-2"
@@ -284,7 +292,7 @@ export default {
                     value: 'number_of_images'
                 },
                 {
-                    text: 'Espaço de Armazenamento (em Mb)',
+                    text: 'Espaço de Armazenamento',
                     align: 'center',
                     value: 'storage_space'
                 },

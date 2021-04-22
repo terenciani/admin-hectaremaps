@@ -17,7 +17,9 @@ router.beforeEach((to, from, next) => {
         let user = AuthService.getLoggedUser();
         if (user == null) {
             // usuario é nulo?
-            next({ path: '/' });
+            if (to.path != '/') {
+                next({ path: '/' });
+            } else next();
         } else if (!user.role == 'ADMIN') {
             if (
                 to.matched.some(

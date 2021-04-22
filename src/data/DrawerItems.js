@@ -20,8 +20,8 @@ const adminItems = [
     },
     {
         icon: 'mdi-google-my-business',
-        text: 'Meus Planos',
-        to: '/myplans',
+        text: 'Meus Planos Contratados',
+        to: '/mycontracts',
         heading: false
     },
     {
