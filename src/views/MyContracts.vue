@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-container v-if="list">
+        <v-container>
             <v-data-table
                 :loading="loading"
                 :headers="headers"
@@ -10,22 +10,11 @@
             >
                 <template v-slot:top>
                     <v-container>
-                        <v-row
-                            align="center"
-                            class="d-flex justify-space-between"
-                        >
-                            <v-col
-                                cols="12"
-                                sm="6"
-                                class="d-flex align-content-center"
-                            >
-                                <h3>Meus Contratos</h3>
+                        <v-row align="center" class="d-flex justify-space-between">
+                            <v-col cols="12" sm="6" class="d-flex align-content-center">
+                                <h3>Histórico de Contratos</h3>
                                 <v-spacer></v-spacer>
-                                <v-divider
-                                    class="mx-4 d-none d-sm-flex"
-                                    inset
-                                    vertical
-                                ></v-divider>
+                                <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                             </v-col>
                             <v-col cols="12" sm="6">
                                 <v-text-field
@@ -54,16 +43,10 @@
                     }}
                 </template>
                 <template v-slot:[`item.finish_date`]="{ item }">
-                    <v-chip
-                        class="ma-2"
-                        outlined
-                        :color="item.finish_date ? 'default' : 'success'"
-                    >
+                    <v-chip class="ma-2" outlined :color="item.finish_date ? 'default' : 'success'">
                         {{
                             item.finish_date
-                                ? utilFormatter.formatDateISOToBR(
-                                      item.finish_date
-                                  )
+                                ? utilFormatter.formatDateISOToBR(item.finish_date)
                                 : ' Ativo '
                         }}
                     </v-chip>
@@ -104,25 +87,16 @@
                         </template>
                         <v-card>
                             <v-card-text>
-                                <strong>Plano: </strong> {{ item.name }}
-                                {{ item.lastname }} <br />
+                                <strong>Plano: </strong> {{ item.name }} {{ item.lastname }} <br />
                                 <strong>Valor:</strong>
                                 {{ utilFormatter.numberToMoney(item.price) }}
                                 <br />
                                 <strong>Quantidade de imagens:</strong>
-                                {{
-                                    utilFormatter.numberDot(
-                                        item.number_of_images
-                                    )
-                                }}
+                                {{ utilFormatter.numberDot(item.number_of_images) }}
                                 imagens
                                 <br />
                                 <strong>Espaço de armazenamento:</strong>
-                                {{
-                                    utilFormatter.spaceTransform(
-                                        item.storage_space
-                                    )
-                                }}
+                                {{ utilFormatter.spaceTransform(item.storage_space) }}
                                 de armazenamento
                                 <br />
                                 <strong>Validade:</strong>
@@ -133,8 +107,6 @@
                 </template>
             </v-data-table>
         </v-container>
-        <service-request @list="init" v-else></service-request>
-
         <confirm-dialog
             :show="dialogRemove"
             :message="
@@ -151,22 +123,15 @@
 
         <confirm-dialog
             :show="dialogRedirect"
-            :message="
-                `Depois de finalizar você não poderá fazer alterações na solicitação!`
-            "
-            @confirm="$router.push('/myrequests')"
+            :message="`Depois de finalizar você não poderá fazer alterações na solicitação!`"
+            @confirm="$router.push('/mycontracts')"
             @cancel="dialogRedirect = false"
         >
         </confirm-dialog>
         <v-snackbar v-model="message.active" :color="message.type">
             {{ message.text }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="message.type"
-                    text
-                    v-bind="attrs"
-                    @click="message.active = false"
-                >
+                <v-btn :class="message.type" text v-bind="attrs" @click="message.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -177,17 +142,14 @@
 <script>
 import ConfirmDialog from '../components/ConfirmDialog.vue';
 import ContractService from '../service/ContractService';
-import ServiceRequest from '../components/ServiceRequest.vue';
 import UtilFormatter from '../utils/UtilFormatter';
 export default {
     components: {
-        ConfirmDialog,
-        ServiceRequest
+        ConfirmDialog
     },
     name: 'MyRequest',
     data() {
         return {
-            list: true,
             dialogRedirect: false,
             dialogRemove: false,
             footerText: 'Total de registros: ',
@@ -247,14 +209,11 @@ export default {
 
             this.loading = true;
             try {
-                this.message.text = await ContractService.cancelContract(
-                    this.planContract
-                );
+                this.message.text = await ContractService.cancelContract(this.planContract);
                 this.message.type = 'success';
             } catch (error) {
                 this.message = {
-                    text:
-                        'Aconteceu um erro interno! Aguarde um momento e tente novamente',
+                    text: 'Aconteceu um erro interno! Aguarde um momento e tente novamente',
                     type: 'error'
                 };
             } finally {

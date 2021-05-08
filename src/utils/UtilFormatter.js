@@ -24,17 +24,16 @@ export default class UtilFormatter {
     }
     static formatPhone(phone) {
         if (!phone) return null;
-        return `(${phone.substring(0, 2)}) ${phone.substring(
-            2,
-            3
-        )} ${phone.substring(3, 7)}-${phone.substring(7, 11)}`;
+        return `(${phone.substring(0, 2)}) ${phone.substring(2, 3)} ${phone.substring(
+            3,
+            7
+        )}-${phone.substring(7, 11)}`;
     }
     static unMaskPhone(phone = '') {
         var str = '';
         for (var i = 0; i < phone.length; i++) {
             let char = phone.charAt(i);
-            if (char != '(' && char != ')' && char != '-' && char != ' ')
-                str += char;
+            if (char != '(' && char != ')' && char != '-' && char != ' ') str += char;
         }
         return str;
     } // unMask
@@ -55,12 +54,9 @@ export default class UtilFormatter {
         // they are the first or last words in the string
         lowers = ['De', 'Da', 'Do', 'Dos', 'Das', 'E'];
         for (i = 0, j = lowers.length; i < j; i++)
-            str = str.replace(
-                new RegExp('\\s' + lowers[i] + '\\s', 'g'),
-                function(txt) {
-                    return txt.toLowerCase();
-                }
-            );
+            str = str.replace(new RegExp('\\s' + lowers[i] + '\\s', 'g'), function(txt) {
+                return txt.toLowerCase();
+            });
 
         return str;
     }

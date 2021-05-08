@@ -8,12 +8,7 @@
                     label="Ativar Edição"
                 ></v-checkbox>
             </v-col>
-            <v-col
-                cols="12"
-                md="6"
-                class="text-center text-md-right"
-                v-if="editing"
-            >
+            <v-col cols="12" md="6" class="text-center text-md-right" v-if="editing">
                 <v-btn
                     outlined
                     large
@@ -48,15 +43,13 @@
         <v-form ref="form" v-model="valid">
             <v-expansion-panels>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Logo e Favicon</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Logo e Favicon</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12" md="6">
                                 <p>
-                                    Logo (indicado usar imagem no formato png
-                                    (fundo transparente) com 512x512 px)
+                                    Logo (indicado usar imagem no formato png (fundo transparente)
+                                    com 512x512 px)
                                 </p>
                                 <upload-image-site
                                     area="logo"
@@ -68,8 +61,7 @@
                             </v-col>
                             <v-col cols="12" md="6">
                                 <p>
-                                    Favicon (indicado usar imagem no formato
-                                    icon com 16x16 px)
+                                    Favicon (indicado usar imagem no formato icon com 16x16 px)
                                 </p>
                                 <upload-image-site
                                     area="favicon"
@@ -83,9 +75,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Seção Principal</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Seção Principal</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <upload-image-site
                             area="hero"
@@ -122,10 +112,7 @@
                                         label="Na parte superior da seção"
                                         value="top"
                                     ></v-radio>
-                                    <v-radio
-                                        label="No meio da seção"
-                                        value="center"
-                                    ></v-radio>
+                                    <v-radio label="No meio da seção" value="center"></v-radio>
                                     <v-radio
                                         label="Na parte inferior da seção"
                                         value="end"
@@ -148,9 +135,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Seção Quem Somos</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Seção Quem Somos</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12">
@@ -181,9 +166,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Seção Serviços</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Seção Serviços</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <upload-image-site
                             area="service"
@@ -212,9 +195,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Seção Planos</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Seção Planos</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12" sm="6">
@@ -236,9 +217,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Seção Vídeo</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Seção Vídeo</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <upload-image-site
                             area="video"
@@ -266,9 +245,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Seção Contato</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Seção Contato</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12" sm="6" md="4">
@@ -352,19 +329,11 @@
             </v-expansion-panels>
         </v-form>
 
-        <loading-dialog
-            :active="loadingDialog"
-            message="Aguarde! Os dados estão sendo enviados"
-        />
+        <loading-dialog :active="loadingDialog" message="Aguarde! Os dados estão sendo enviados" />
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -433,17 +402,14 @@ export default {
         },
         async save() {
             if (!this.$refs.form.validate()) {
-                this.response.message =
-                    'Todos os campos em vermelho são obrigatórios';
+                this.response.message = 'Todos os campos em vermelho são obrigatórios';
                 this.response.type = 'error';
                 this.response.active = true;
                 return;
             }
             this.loadingDialog = true;
             try {
-                this.response.message = await DataService.setData(
-                    this.homeData
-                );
+                this.response.message = await DataService.setData(this.homeData);
                 this.response.type = 'success';
                 this.$refs.form.resetValidation();
                 this.$refs.form.reset();

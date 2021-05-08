@@ -3,7 +3,7 @@
         <v-app
             id="inspire"
             transition="slide-x-transition"
-            v-if="loggedUser && loggedLocal"
+            v-if="loggedUser && loggedLocal && !isExpired"
         >
             <drawer-menu></drawer-menu>
 
@@ -11,35 +11,10 @@
                 <v-layout fill-height justify-center align-center>
                     <v-container>
                         <v-col cols="12" class="text-center">
-                            <v-icon size="60px">{{
-                                unauthorizedSection.icon
-                            }}</v-icon>
+                            <v-icon size="60px">{{ unauthorizedSection.icon }}</v-icon>
                         </v-col>
                         <v-col cols="12" class="text-center">
-                            <span class="display-1">{{
-                                unauthorizedSection.text
-                            }}</span>
-                        </v-col>
-                    </v-container>
-                </v-layout>
-            </v-main>
-            <v-main v-else-if="isExpired">
-                <v-layout fill-height justify-center align-center>
-                    <v-container>
-                        <v-col cols="12" class="text-center">
-                            <v-icon size="60px">{{
-                                expiredSection.icon
-                            }}</v-icon>
-                        </v-col>
-                        <v-col cols="12" class="text-center">
-                            <span class="display-1">{{
-                                expiredSection.text
-                            }}</span>
-                        </v-col>
-                        <v-col cols="12" class="text-center">
-                            <v-btn color="info" outlined large @click="logout"
-                                >Fazer Login</v-btn
-                            >
+                            <span class="display-1">{{ unauthorizedSection.text }}</span>
                         </v-col>
                     </v-container>
                 </v-layout>
@@ -48,6 +23,23 @@
                 <v-container>
                     <router-view></router-view>
                 </v-container>
+            </v-main>
+        </v-app>
+        <v-app v-else-if="isExpired">
+            <v-main>
+                <v-layout fill-height justify-center align-center>
+                    <v-container>
+                        <v-col cols="12" class="text-center">
+                            <v-icon size="60px">{{ expiredSection.icon }}</v-icon>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                            <span class="display-1">{{ expiredSection.text }}</span>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                            <v-btn color="info" outlined large @click="logout">Fazer Login</v-btn>
+                        </v-col>
+                    </v-container>
+                </v-layout>
             </v-main>
         </v-app>
         <v-app v-else>
@@ -88,6 +80,7 @@ export default {
         async logout() {
             await AuthService.removeUserFromLocalStorage;
             this.$store.dispatch('logoffUser');
+            this.$router.push('/');
         }
     },
     computed: {

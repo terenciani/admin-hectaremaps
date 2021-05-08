@@ -1,14 +1,8 @@
 <template>
     <v-container>
         <div v-if="progressInfos">
-            <div
-                class="mb-2"
-                v-for="(progressInfo, index) in progressInfos"
-                :key="index"
-            >
-                <span v-if="progressInfo.percentage != 100">{{
-                    progressInfo.fileName
-                }}</span>
+            <div class="mb-2" v-for="(progressInfo, index) in progressInfos" :key="index">
+                <span v-if="progressInfo.percentage != 100">{{ progressInfo.fileName }}</span>
                 <v-progress-linear
                     v-if="progressInfo.percentage != 100"
                     v-model="progressInfo.percentage"
@@ -25,13 +19,11 @@
                 <v-alert dismissible dense outlined type="info">
                     <v-row align="center">
                         <v-col class="grow">
-                            Você não possui nenhum plano contratado! Para
-                            realizar essa operação você precisar contratar!
+                            Você não possui nenhum plano contratado! Para realizar essa operação
+                            você precisar contratar!
                         </v-col>
                         <v-col class="shrink">
-                            <v-btn to="/plancontract" text
-                                >Contratar Plano</v-btn
-                            >
+                            <v-btn to="/plancontract" text>Contratar Plano</v-btn>
                         </v-col>
                     </v-row>
                 </v-alert>
@@ -81,15 +73,9 @@
                                         >
                                             Cancelar
                                         </v-btn>
-                                        <v-btn
-                                            color="primary"
-                                            text
-                                            @click="createRequest()"
-                                        >
+                                        <v-btn color="primary" text @click="createRequest()">
                                             Próximo
-                                            <v-icon class="mr-3"
-                                                >mdi-chevron-double-right</v-icon
-                                            >
+                                            <v-icon class="mr-3">mdi-chevron-double-right</v-icon>
                                         </v-btn>
                                     </v-col>
                                 </v-row>
@@ -98,11 +84,7 @@
 
                         <v-stepper-content step="2">
                             <v-card>
-                                <v-row
-                                    no-gutters
-                                    justify="center"
-                                    align="center"
-                                >
+                                <v-row no-gutters justify="center" align="center">
                                     <v-col cols="8">
                                         <v-file-input
                                             accept="image/*, .zip, .rar, .7zip"
@@ -119,34 +101,25 @@
                                             dark
                                             block
                                             large
+                                            :disabled="allowUpload"
                                             @click="uploadImages"
                                         >
                                             Enviar Imagens
-                                            <v-icon right dark
-                                                >mdi-cloud-upload</v-icon
-                                            >
+                                            <v-icon right dark>mdi-cloud-upload</v-icon>
                                         </v-btn>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-card
-                                            v-if="imagesNames.length > 0"
-                                            class="mx-auto"
-                                        >
+                                        <v-card v-if="imagesNames.length > 0" class="mx-auto">
                                             <a
                                                 :href="
                                                     `${host}/upload/request/${requestId}/${file.filename}`
                                                 "
                                                 target="_blank"
                                                 style="text-decoration: none"
-                                                v-for="(file,
-                                                index) in imagesNames"
+                                                v-for="(file, index) in imagesNames"
                                                 :key="index"
                                             >
-                                                <v-chip
-                                                    class="ma-2"
-                                                    color="success"
-                                                    outlined
-                                                >
+                                                <v-chip class="ma-2" color="success" outlined>
                                                     <v-icon left>
                                                         mdi-eye
                                                     </v-icon>
@@ -159,12 +132,7 @@
                                 </v-row>
                                 <v-row>
                                     <v-col cols="12" class="text-right">
-                                        <v-btn
-                                            @click="cancel()"
-                                            color="error"
-                                            class="mr-5"
-                                            text
-                                        >
+                                        <v-btn @click="cancel()" color="error" class="mr-5" text>
                                             Cancelar
                                         </v-btn>
                                         <v-btn
@@ -192,22 +160,15 @@
         </confirm-dialog>
         <confirm-dialog
             :show="dialogRedirect"
-            :message="
-                `Depois de finalizar você não poderá fazer alterações na solicitação!`
-            "
+            :message="`Depois de finalizar você não poderá fazer alterações na solicitação!`"
             @confirm="$emit('list')"
             @cancel="dialogRedirect = false"
         >
         </confirm-dialog>
-        <v-snackbar v-model="response.active" :color="response.type">
-            {{ response.message }}
+        <v-snackbar v-model="message.active" :color="message.type">
+            {{ message.text }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="message.type" text v-bind="attrs" @click="message.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -236,7 +197,7 @@ export default {
             planContracted: {},
             services: [],
             selectedServices: [],
-            selectedImages: undefined,
+            selectedImages: [],
             progressInfos: [],
             imageInfos: [],
             requestId: {},
@@ -247,6 +208,12 @@ export default {
                 active: false
             }
         };
+    },
+    computed: {
+        allowUpload() {
+            if (!this.selectedImages || this.selectedImages.length <= 0) return true;
+            return false;
+        }
     },
     methods: {
         async createRequest() {
@@ -266,8 +233,7 @@ export default {
                 this.stepper = 2;
             } catch (error) {
                 this.message = {
-                    text:
-                        'Aconteceu um erro interno! Aguarde um momento e tente novamente',
+                    text: 'Aconteceu um erro interno! Aguarde um momento e tente novamente',
                     type: 'error',
                     active: true
                 };
@@ -281,8 +247,7 @@ export default {
                 this.$router.push('/');
             } catch (error) {
                 this.message = {
-                    text:
-                        'Aconteceu um erro interno! Aguarde um momento e tente novamente',
+                    text: 'Aconteceu um erro interno! Aguarde um momento e tente novamente',
                     type: 'error',
                     active: true
                 };
@@ -334,8 +299,7 @@ export default {
                 .catch(() => {
                     this.progressInfos[index].percentage = 0;
                     this.message = {
-                        text:
-                            'Não foi possível enviar a imagem. Tente mais tarde!',
+                        text: 'Não foi possível enviar a imagem. Tente mais tarde!',
                         type: 'error',
                         active: true
                     };
@@ -347,9 +311,7 @@ export default {
             try {
                 this.planContracted = await ContractService.getContractCurrentByUser();
                 if (this.planContracted.id_plan_contract) {
-                    this.services = await PlanService.getItemsByPlan(
-                        this.planContracted.fk_plan
-                    );
+                    this.services = await PlanService.getItemsByPlan(this.planContracted.fk_plan);
                     this.requests = await RequestService.getRequestActivesByUser();
                     if (this.requests.length > 0) this.dialogConfirm = true;
                 }

@@ -9,9 +9,7 @@ import axios from 'axios';
 export default class UserService {
     static async searchCEP(cep) {
         try {
-            const { data } = await axios.get(
-                `https://viacep.com.br/ws/${cep}/json/`
-            );
+            const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
             return {
                 address: data.logradouro,
                 complement: data.complemento,

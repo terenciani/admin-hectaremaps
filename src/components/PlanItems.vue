@@ -10,19 +10,10 @@
             <template v-slot:top>
                 <v-container>
                     <v-row align="center" class="d-flex justify-space-between">
-                        <v-col
-                            cols="12"
-                            sm="6"
-                            md="4"
-                            class="d-flex align-content-center"
-                        >
+                        <v-col cols="12" sm="6" md="4" class="d-flex align-content-center">
                             <h2>Serviços Inclusos</h2>
                             <v-spacer></v-spacer>
-                            <v-divider
-                                class="mx-4 d-none d-sm-flex"
-                                inset
-                                vertical
-                            ></v-divider>
+                            <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -59,11 +50,7 @@
                 {{ utilFormatter.numberToMoney(item.price) }}
             </template>
             <template v-slot:[`item.active`]="{ item }">
-                <v-chip
-                    class="ma-2"
-                    outlined
-                    :color="item.active == 1 ? 'primary' : 'default'"
-                >
+                <v-chip class="ma-2" outlined :color="item.active == 1 ? 'primary' : 'default'">
                     {{ item.active == 1 ? 'Ativo' : 'Inativo' }}
                 </v-chip>
             </template>
@@ -103,11 +90,7 @@
                 </v-btn>
             </template>
         </v-data-table>
-        <v-dialog
-            v-model="dialogForm"
-            :fullscreen="$vuetify.breakpoint.xs"
-            max-width="600px"
-        >
+        <v-dialog v-model="dialogForm" :fullscreen="$vuetify.breakpoint.xs" max-width="600px">
             <v-card>
                 <v-toolbar color="teal" dark>
                     {{ planItem.id_plan == null ? 'Novo' : 'Editando' }} Serviço
@@ -190,12 +173,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -290,9 +268,7 @@ export default {
         async remove() {
             this.loading = true;
             try {
-                this.response.message = await PlanService.removePlanItem(
-                    this.planItem
-                );
+                this.response.message = await PlanService.removePlanItem(this.planItem);
                 this.response.type = 'success';
             } catch (error) {
                 this.response.message = error;
@@ -330,14 +306,10 @@ export default {
             if (!this.$refs.form.validate()) return;
             try {
                 if (this.planItem.id_item_plan) {
-                    this.response.message = await PlanService.updatePlanItem(
-                        this.planItem
-                    );
+                    this.response.message = await PlanService.updatePlanItem(this.planItem);
                     this.response.type = 'success';
                 } else {
-                    this.response.message = await PlanService.savePlanItem(
-                        this.planItem
-                    );
+                    this.response.message = await PlanService.savePlanItem(this.planItem);
                     this.response.type = 'success';
                 }
             } catch (error) {

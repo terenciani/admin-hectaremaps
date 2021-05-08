@@ -3,39 +3,26 @@
         <v-row>
             <v-col cols="12">
                 <v-alert type="warning" dismissible dense outlined>
-                    <span class="font-weight-bold">ATENÇÃO!</span> Após a
-                    contratação do plano você deverá entrar em contato pelo
-                    nosso telefone para efetivar a compra. Assim que
+                    <span class="font-weight-bold">ATENÇÃO!</span> Após a contratação do plano você
+                    deverá entrar em contato pelo nosso telefone para efetivar a compra. Assim que
                     confirmarmos o recebimento, seu acesso será liberado.
                 </v-alert>
             </v-col>
         </v-row>
         <v-row v-if="!planContracted.id_plan_contract">
-            <v-col
-                cols="12"
-                sm="4"
-                v-for="plan in plansAndItems"
-                :key="plan.id_plan"
-            >
+            <v-col cols="12" sm="4" v-for="plan in plansAndItems" :key="plan.id_plan">
                 <v-hover>
                     <template v-slot:default="{ hover }">
-                        <v-card
-                            class="mx-auto"
-                            :elevation="plan.site_emphasis ? 24 : 1"
-                        >
+                        <v-card class="mx-auto" :elevation="plan.site_emphasis ? 24 : 1">
                             <v-card-title
                                 :class="
                                     `teal ${
-                                        plan.site_emphasis
-                                            ? 'darken-4'
-                                            : 'lighten-1'
+                                        plan.site_emphasis ? 'darken-4' : 'lighten-1'
                                     } white--text d-block text-center`
                                 "
                                 >{{ plan.name }} <br />
                                 <div class="text-subtitle-1">
-                                    {{
-                                        utilFormatter.numberToMoney(plan.price)
-                                    }}
+                                    {{ utilFormatter.numberToMoney(plan.price) }}
                                 </div>
                             </v-card-title>
                             <v-divider class="mx-4"></v-divider>
@@ -46,15 +33,11 @@
                                 </div>
                                 <v-divider class="my-4"></v-divider>
                                 <div class="text--primary">
-                                    {{ spaceTransform(plan.storage_space) }} de
-                                    armazenamento
+                                    {{ spaceTransform(plan.storage_space) }} de armazenamento
                                 </div>
                                 <v-divider class="my-4"></v-divider>
                                 <template v-for="planItems in plan.plan_items">
-                                    <div
-                                        :key="planItems.id_item_plan"
-                                        class="text--primary"
-                                    >
+                                    <div :key="planItems.id_item_plan" class="text--primary">
                                         {{ planItems.description }}
                                     </div>
                                     <v-divider
@@ -63,19 +46,12 @@
                                     ></v-divider>
                                 </template>
 
-                                <div
-                                    class="text-subtitle-2"
-                                    v-if="plan.observation"
-                                >
+                                <div class="text-subtitle-2" v-if="plan.observation">
                                     * {{ plan.observation }}
                                 </div>
                             </v-card-text>
                             <v-fade-transition>
-                                <v-overlay
-                                    v-if="hover"
-                                    absolute
-                                    color="#036358"
-                                >
+                                <v-overlay v-if="hover" absolute color="#036358">
                                     <v-btn
                                         large
                                         color="primary accent-4"
@@ -98,9 +74,7 @@
                             Você já possui um plano contratado
                         </v-col>
                         <v-col class="shrink">
-                            <v-btn to="/myplans" text
-                                >Ir para meus planos</v-btn
-                            >
+                            <v-btn to="/mycontracts" text>Ir para histórico de contratos</v-btn>
                         </v-col>
                     </v-row>
                 </v-alert>
@@ -126,12 +100,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -168,9 +137,7 @@ export default {
         async contract() {
             try {
                 if (!this.plan.id_plan) return;
-                this.response.message = await ContractService.contract(
-                    this.plan
-                );
+                this.response.message = await ContractService.contract(this.plan);
                 this.response.type = 'success';
             } catch (error) {
                 this.response.message = error;

@@ -8,12 +8,7 @@
                     label="Ativar Edição"
                 ></v-checkbox>
             </v-col>
-            <v-col
-                cols="12"
-                sm="8"
-                class="text-center text-sm-right"
-                v-if="editing"
-            >
+            <v-col cols="12" sm="8" class="text-center text-sm-right" v-if="editing">
                 <v-btn
                     outlined
                     large
@@ -49,9 +44,7 @@
         <v-form ref="form" v-model="valid" v-if="user.id_user">
             <v-expansion-panels>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Dados Pessoais</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Dados Pessoais</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12" sm="6" md="4">
@@ -131,9 +124,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Endereço</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Endereço</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12" sm="6" md="3">
@@ -152,9 +143,7 @@
                             <v-col cols="12" sm="6" md="6">
                                 <v-text-field
                                     outlined
-                                    :disabled="
-                                        loadingDialog || !editing || !user.cep
-                                    "
+                                    :disabled="loadingDialog || !editing || !user.cep"
                                     :rules="[requiredField]"
                                     required
                                     v-model="user.address"
@@ -164,9 +153,7 @@
                             <v-col cols="12" sm="6" md="3">
                                 <v-text-field
                                     outlined
-                                    :disabled="
-                                        loadingDialog || !editing || !user.cep
-                                    "
+                                    :disabled="loadingDialog || !editing || !user.cep"
                                     :rules="[requiredField]"
                                     required
                                     v-model="user.number"
@@ -176,9 +163,7 @@
                             <v-col cols="12" sm="6">
                                 <v-text-field
                                     outlined
-                                    :disabled="
-                                        loadingDialog || !editing || !user.cep
-                                    "
+                                    :disabled="loadingDialog || !editing || !user.cep"
                                     :rules="[requiredField]"
                                     required
                                     v-model="user.complement"
@@ -188,9 +173,7 @@
                             <v-col cols="12" sm="6">
                                 <v-text-field
                                     outlined
-                                    :disabled="
-                                        loadingDialog || !editing || !user.cep
-                                    "
+                                    :disabled="loadingDialog || !editing || !user.cep"
                                     :rules="[requiredField]"
                                     required
                                     v-model="user.district"
@@ -225,16 +208,12 @@
         <v-form ref="formPass" v-model="validPass" v-if="user.id_user">
             <v-expansion-panels class="mt-5">
                 <v-expansion-panel>
-                    <v-expansion-panel-header
-                        >Segurança</v-expansion-panel-header
-                    >
+                    <v-expansion-panel-header>Segurança</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    :append-icon="
-                                        show ? 'mdi-eye' : 'mdi-eye-off'
-                                    "
+                                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                                     :disabled="loadingDialog || !editing"
                                     :type="show ? 'text' : 'password'"
                                     :rules="currentRules"
@@ -247,9 +226,7 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    :append-icon="
-                                        show1 ? 'mdi-eye' : 'mdi-eye-off'
-                                    "
+                                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                     :type="show1 ? 'text' : 'password'"
                                     :rules="passwordRules"
                                     :disabled="loadingDialog || !editing"
@@ -262,9 +239,7 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    :append-icon="
-                                        show2 ? 'mdi-eye' : 'mdi-eye-off'
-                                    "
+                                    :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                                     :type="show2 ? 'text' : 'password'"
                                     :rules="confirmRules"
                                     :disabled="loadingDialog || !editing"
@@ -295,16 +270,10 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </v-form>
-        <v-dialog
-            v-model="updateEmailDialog"
-            transition="dialog-transition"
-            max-width="400"
-        >
+        <v-dialog v-model="updateEmailDialog" transition="dialog-transition" max-width="400">
             <v-card shaped>
                 <v-card-title class="text-center d-block">
-                    <v-icon color="warning" large
-                        >mdi-alert-circle-outline</v-icon
-                    >
+                    <v-icon color="warning" large>mdi-alert-circle-outline</v-icon>
                     <p>Tem certeza disso?</p>
                 </v-card-title>
                 <v-form ref="formEmail" v-model="validEmail">
@@ -317,14 +286,8 @@
                             v-model="newEmail"
                             label="Novo e-mail"
                         ></v-text-field>
-                        <v-alert
-                            type="warning"
-                            outlined
-                            dismissible
-                            :value="true"
-                        >
-                            Será enviado um e-mail de confirmação antes da troca
-                            ser efetivada.
+                        <v-alert type="warning" outlined dismissible :value="true">
+                            Será enviado um e-mail de confirmação antes da troca ser efetivada.
                         </v-alert>
                     </v-card-text>
                     <v-card-actions>
@@ -332,11 +295,7 @@
                         <v-btn @click="init" color="error" text>
                             Cancelar
                         </v-btn>
-                        <v-btn
-                            color="success lighten-1"
-                            text
-                            @click="updateEmail"
-                        >
+                        <v-btn color="success lighten-1" text @click="updateEmail">
                             Confirmar
                         </v-btn>
                     </v-card-actions>
@@ -350,12 +309,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -439,18 +393,12 @@ export default {
             password: {},
             currentRules: [
                 v => !!v || 'A senha é obrigatória.',
-                v =>
-                    (v && v.length >= 8) ||
-                    'A senha deve ter no mínimo 8 characteres.',
-                v =>
-                    (v && md5(v) == this.user.password) ||
-                    'As senhas não conferem.'
+                v => (v && v.length >= 8) || 'A senha deve ter no mínimo 8 characteres.',
+                v => (v && md5(v) == this.user.password) || 'As senhas não conferem.'
             ],
             passwordRules: [
                 v => !!v || 'A senha é obrigatória.',
-                v =>
-                    (v && v.length >= 8) ||
-                    'A senha deve ter no mínimo 8 characteres.'
+                v => (v && v.length >= 8) || 'A senha deve ter no mínimo 8 characteres.'
             ],
             confirmRules: [
                 v => !!v || 'A confirmação de senha é obrigatória.',
@@ -510,17 +458,14 @@ export default {
         },
         async save() {
             if (!this.$refs.form.validate()) {
-                this.response.message =
-                    'Todos os campos em destaque são obrigatórios';
+                this.response.message = 'Todos os campos em destaque são obrigatórios';
                 this.response.type = 'error';
                 this.response.active = true;
                 return;
             }
             this.loadingDialog = true;
             try {
-                this.response.message = await UserService.registrationUpdate(
-                    this.user
-                );
+                this.response.message = await UserService.registrationUpdate(this.user);
                 this.response.type = 'success';
                 this.$refs.form.resetValidation();
                 this.$refs.form.reset();
@@ -544,9 +489,7 @@ export default {
             }
             this.loadingDialog = true;
             try {
-                this.response.message = await UserService.updatePassword(
-                    this.password
-                );
+                this.response.message = await UserService.updatePassword(this.password);
                 this.response.type = 'success';
                 this.$refs.formPass.resetValidation();
                 this.$refs.formPass.reset();

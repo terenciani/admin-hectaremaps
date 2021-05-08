@@ -22,16 +22,12 @@ export default class UploadService {
         let formData = new FormData();
         formData.append('file', file);
         try {
-            let fileData = await API.post(
-                `servicerequest/${requestId}`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    onUploadProgress
-                }
-            );
+            let fileData = await API.post(`servicerequest/${requestId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress
+            });
             return fileData.data;
         } catch (error) {
             throw error.response.data;

@@ -4,9 +4,7 @@
             <v-card>
                 <v-toolbar dark color="teal">
                     <v-spacer></v-spacer>
-                    <v-toolbar-title class="text-center d-block"
-                        >Acesso restrito</v-toolbar-title
-                    >
+                    <v-toolbar-title class="text-center d-block">Acesso restrito</v-toolbar-title>
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text class="pa-5">
@@ -88,12 +86,10 @@
 
                 <v-card-actions class="text-xs-center">
                     <p class="text-justify info pa-5 white--text">
-                        <span class="font-weight-bold">AVISO:</span> Após
-                        preencher o seu e-mail e clicar no botão
-                        <span class="font-weight-bold">Recuperar Senha</span>,
-                        será enviado ao e-mail informado uma senha provisória
-                        que deve ser usada para acessar o sistema e ser alterada
-                        logo em seguida.
+                        <span class="font-weight-bold">AVISO:</span> Após preencher o seu e-mail e
+                        clicar no botão <span class="font-weight-bold">Recuperar Senha</span>, será
+                        enviado ao e-mail informado uma senha provisória que deve ser usada para
+                        acessar o sistema e ser alterada logo em seguida.
                     </p>
                 </v-card-actions>
             </v-card>
@@ -101,15 +97,8 @@
         <v-dialog v-model="loadingDialog" hide-overlay persistent width="350">
             <v-card color="primary" dark>
                 <v-card-text>
-                    <v-card-text>
-                        Aguarde! Sua solicitação está sendo
-                        enviada!</v-card-text
-                    >
-                    <v-progress-linear
-                        indeterminate
-                        color="white"
-                        class="mb-0"
-                    ></v-progress-linear>
+                    <v-card-text> Aguarde! Sua solicitação está sendo enviada!</v-card-text>
+                    <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -117,12 +106,7 @@
             {{ response.message }}
 
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -195,10 +179,7 @@ export default {
                     await AuthService.setUserInLocalStorage(resp.user);
                     this.$store.dispatch('loadLoggedUser');
                     console.log(resp.user.status);
-                    if (
-                        resp.user.status == 'UPDATE' ||
-                        resp.user.status == 'NEW'
-                    ) {
+                    if (resp.user.status == 'UPDATE' || resp.user.status == 'NEW') {
                         this.$router.go('/profile');
                     } else {
                         this.$router.go(this.defaultRoute);
@@ -220,8 +201,7 @@ export default {
         }
     },
     mounted() {
-        if (this.$route.query && this.$route.query.r)
-            this.defaultRoute = this.$route.query.r;
+        if (this.$route.query && this.$route.query.r) this.defaultRoute = this.$route.query.r;
     }
 };
 </script>

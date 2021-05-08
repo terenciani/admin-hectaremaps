@@ -57,7 +57,6 @@ export default {
                 AuthService.removeUserFromLocalStorage();
                 API.defaults.headers['x-access-token'] = '';
                 context.commit('loggoutUser');
-                location.reload();
             } catch (error) {
                 console.log(error);
             }

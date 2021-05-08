@@ -10,19 +10,10 @@
             <template v-slot:top>
                 <v-container>
                     <v-row align="center" class="d-flex justify-space-between">
-                        <v-col
-                            cols="12"
-                            sm="6"
-                            md="3"
-                            class="d-flex align-content-center"
-                        >
+                        <v-col cols="12" sm="6" md="3" class="d-flex align-content-center">
                             <h3>Gestão de Usuários</h3>
                             <v-spacer></v-spacer>
-                            <v-divider
-                                class="mx-4 d-none d-sm-flex"
-                                inset
-                                vertical
-                            ></v-divider>
+                            <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -69,11 +60,7 @@
                 {{ utilFormatter.formatDateISOToBR(item.create_at) }}
             </template>
             <template v-slot:[`item.role`]="{ item }">
-                <v-chip
-                    class="ma-2"
-                    outlined
-                    :color="item.role == 'ADMIN' ? 'primary' : 'default'"
-                >
+                <v-chip class="ma-2" outlined :color="item.role == 'ADMIN' ? 'primary' : 'default'">
                     {{ item.role == 'ADMIN' ? 'Administrador' : 'Cliente' }}
                 </v-chip>
             </template>
@@ -106,25 +93,18 @@
                     </template>
                     <v-card>
                         <v-card-text>
-                            <strong>Nome: </strong> {{ item.name }}
-                            {{ item.lastname }} <br />
+                            <strong>Nome: </strong> {{ item.name }} {{ item.lastname }} <br />
                             <strong>E-mail:</strong> {{ item.email }} <br />
                             <strong>Telefone:</strong>
                             {{ utilFormatter.formatPhone(item.phone) }} <br />
                             <strong>Criado em:</strong>
-                            {{
-                                utilFormatter.formatDateISOToBR(item.create_at)
-                            }}
+                            {{ utilFormatter.formatDateISOToBR(item.create_at) }}
                             <br />
                             <strong>Ativado em:</strong>
-                            {{
-                                utilFormatter.formatDateISOToBR(item.confirm_at)
-                            }}
+                            {{ utilFormatter.formatDateISOToBR(item.confirm_at) }}
                             <br />
                             <strong>Último acesso em:</strong>
-                            {{
-                                utilFormatter.formatDateISOToBR(item.access_at)
-                            }}
+                            {{ utilFormatter.formatDateISOToBR(item.access_at) }}
                         </v-card-text>
                     </v-card>
                 </v-menu>
@@ -170,9 +150,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <v-text-field
                                         label="Nome *"
@@ -184,9 +162,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <v-text-field
                                         label="Sobrenome *"
@@ -198,9 +174,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <v-text-field
                                         label="E-mail *"
@@ -212,9 +186,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <v-text-field
                                         :rules="phoneRules"
@@ -229,14 +201,10 @@
                                     cols="12"
                                     md="6"
                                     v-if="!user.id_user"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <v-text-field
-                                        :append-icon="
-                                            show ? 'mdi-eye' : 'mdi-eye-off'
-                                        "
+                                        :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                                         :type="show ? 'text' : 'password'"
                                         :rules="passwordRules"
                                         hint="A senha deve ter no mínimo 8 characteres."
@@ -250,15 +218,11 @@
                                     cols="12"
                                     v-if="!user.id_user"
                                     md="6"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <v-text-field
                                         :rules="confirmRules"
-                                        :append-icon="
-                                            show2 ? 'mdi-eye' : 'mdi-eye-off'
-                                        "
+                                        :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :type="show2 ? 'text' : 'password'"
                                         label="Confirmação de Senha *"
                                         v-model="user.confirmpass"
@@ -270,44 +234,25 @@
                                     cols="12"
                                     md="6"
                                     v-if="user.id_user"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <strong>Permissão</strong>
                                     <v-radio-group v-model="user.role">
-                                        <v-radio
-                                            label="Administrador"
-                                            value="ADMIN"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="Cliente"
-                                            value="USER"
-                                        ></v-radio>
+                                        <v-radio label="Administrador" value="ADMIN"></v-radio>
+                                        <v-radio label="Cliente" value="USER"></v-radio>
                                     </v-radio-group>
                                 </v-col>
                                 <v-col
                                     cols="12"
                                     md="6"
                                     v-if="user.id_user"
-                                    :class="
-                                        $vuetify.breakpoint.xs ? 'py-2' : ''
-                                    "
+                                    :class="$vuetify.breakpoint.xs ? 'py-2' : ''"
                                 >
                                     <strong>Situação Cadastral</strong>
                                     <v-radio-group v-model="user.status">
-                                        <v-radio
-                                            label="Novo"
-                                            value="NEW"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="Ativo"
-                                            value="ACTIVE"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="Bloqueado"
-                                            value="BLOCKED"
-                                        ></v-radio>
+                                        <v-radio label="Novo" value="NEW"></v-radio>
+                                        <v-radio label="Ativo" value="ACTIVE"></v-radio>
+                                        <v-radio label="Bloqueado" value="BLOCKED"></v-radio>
                                         <v-radio
                                             label="Requer atualização cadastral"
                                             value="UPDATE"
@@ -346,12 +291,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -450,9 +390,7 @@ export default {
             phoneRules: [v => !!v || 'O telefone é obrigatório.'],
             passwordRules: [
                 v => !!v || 'A senha é obrigatória.',
-                v =>
-                    (v && v.length >= 8) ||
-                    'A senha deve ter no mínimo 8 characteres.'
+                v => (v && v.length >= 8) || 'A senha deve ter no mínimo 8 characteres.'
             ],
             confirmRules: [
                 v => !!v || 'A confirmação de senha é obrigatória.',

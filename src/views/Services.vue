@@ -10,19 +10,10 @@
             <template v-slot:top>
                 <v-container>
                     <v-row align="center" class="d-flex justify-space-between">
-                        <v-col
-                            cols="12"
-                            sm="6"
-                            md="3"
-                            class="d-flex align-content-center"
-                        >
+                        <v-col cols="12" sm="6" md="3" class="d-flex align-content-center">
                             <h3>Gestão de Serviços</h3>
                             <v-spacer></v-spacer>
-                            <v-divider
-                                class="mx-4 d-none d-sm-flex"
-                                inset
-                                vertical
-                            ></v-divider>
+                            <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -72,11 +63,7 @@
                 {{ utilFormatter.numberToMoney(item.price) }}
             </template>
             <template v-slot:[`item.active`]="{ item }">
-                <v-chip
-                    class="ma-2"
-                    outlined
-                    :color="item.active == 1 ? 'primary' : 'default'"
-                >
+                <v-chip class="ma-2" outlined :color="item.active == 1 ? 'primary' : 'default'">
                     {{ item.active == 1 ? 'Ativo' : 'Inativo' }}
                 </v-chip>
             </template>
@@ -162,16 +149,9 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-row>
-                                        <v-col
-                                            cols="12"
-                                            sm="6"
-                                            md="3"
-                                            v-if="service.image"
-                                        >
+                                        <v-col cols="12" sm="6" md="3" v-if="service.image">
                                             <v-img
-                                                :src="
-                                                    `${host}/assets/${service.image}`
-                                                "
+                                                :src="`${host}/assets/${service.image}`"
                                                 max-width="500"
                                                 max-height="300"
                                             >
@@ -189,27 +169,17 @@
                                                 </template>
                                             </v-img>
                                         </v-col>
-                                        <v-col
-                                            cols="12"
-                                            sm="6"
-                                            md="9"
-                                            class="d-flex align-center"
-                                        >
+                                        <v-col cols="12" sm="6" md="9" class="d-flex align-center">
                                             <v-row>
                                                 <v-col
                                                     cols="12"
-                                                    v-if="
-                                                        !alterImage &&
-                                                            service.image
-                                                    "
+                                                    v-if="!alterImage && service.image"
                                                 >
                                                     <v-btn
                                                         class="teal white--text"
                                                         large
                                                         block
-                                                        @click="
-                                                            alterImage = true
-                                                        "
+                                                        @click="alterImage = true"
                                                     >
                                                         {{
                                                             service.id_service
@@ -220,42 +190,26 @@
                                                 </v-col>
                                                 <v-col cols="12" v-else>
                                                     <v-row>
-                                                        <v-col
-                                                            cols="12"
-                                                            md="9"
-                                                            class="pb-0"
-                                                        >
+                                                        <v-col cols="12" md="9" class="pb-0">
                                                             <v-file-input
                                                                 label="Imagem do serviço"
                                                                 outlined
-                                                                :rules="[
-                                                                    requiredRule
-                                                                ]"
+                                                                :rules="[requiredRule]"
                                                                 accept="image/*"
                                                                 prepend-icon="mdi-camera"
-                                                                @change="
-                                                                    selectFile
-                                                                "
+                                                                @change="selectFile"
                                                             ></v-file-input>
                                                         </v-col>
                                                     </v-row>
                                                 </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    v-if="currentFile"
-                                                >
+                                                <v-col cols="12" v-if="currentFile">
                                                     <v-progress-linear
                                                         v-model="progress"
                                                         color="light-blue"
                                                         height="25"
                                                         reactive
                                                     >
-                                                        <strong
-                                                            >{{
-                                                                progress
-                                                            }}
-                                                            %</strong
-                                                        >
+                                                        <strong>{{ progress }} %</strong>
                                                     </v-progress-linear>
                                                 </v-col>
                                             </v-row>
@@ -293,12 +247,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -390,9 +339,7 @@ export default {
         async remove() {
             this.loading = true;
             try {
-                this.response.message = await ServiceService.remove(
-                    this.service
-                );
+                this.response.message = await ServiceService.remove(this.service);
                 this.response.type = 'success';
             } catch (error) {
                 this.response.message = error;
@@ -428,15 +375,9 @@ export default {
             if (!this.$refs.form.validate()) return;
             try {
                 if (this.service.id_service) {
-                    ServiceService.update(
-                        this.currentFile,
-                        this.service,
-                        event => {
-                            this.progress = Math.round(
-                                (100 * event.loaded) / event.total
-                            );
-                        }
-                    )
+                    ServiceService.update(this.currentFile, this.service, event => {
+                        this.progress = Math.round((100 * event.loaded) / event.total);
+                    })
                         .then(() => {
                             this.response = {
                                 message: 'Serviço cadastrado com sucesso!',
@@ -455,15 +396,9 @@ export default {
                             };
                         });
                 } else {
-                    ServiceService.save(
-                        this.currentFile,
-                        this.service,
-                        event => {
-                            this.progress = Math.round(
-                                (100 * event.loaded) / event.total
-                            );
-                        }
-                    )
+                    ServiceService.save(this.currentFile, this.service, event => {
+                        this.progress = Math.round((100 * event.loaded) / event.total);
+                    })
                         .then(() => {
                             this.response = {
                                 message: 'Serviço cadastrado com sucesso!',

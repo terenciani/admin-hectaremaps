@@ -10,19 +10,10 @@
             <template v-slot:top>
                 <v-container>
                     <v-row align="center" class="d-flex justify-space-between">
-                        <v-col
-                            cols="12"
-                            sm="6"
-                            md="3"
-                            class="d-flex align-content-center"
-                        >
+                        <v-col cols="12" sm="6" md="3" class="d-flex align-content-center">
                             <h3>Gestão de Planos</h3>
                             <v-spacer></v-spacer>
-                            <v-divider
-                                class="mx-4 d-none d-sm-flex"
-                                inset
-                                vertical
-                            ></v-divider>
+                            <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -80,11 +71,7 @@
             </template>
 
             <template v-slot:[`item.active`]="{ item }">
-                <v-chip
-                    class="ma-2"
-                    outlined
-                    :color="item.active == 1 ? 'primary' : 'default'"
-                >
+                <v-chip class="ma-2" outlined :color="item.active == 1 ? 'primary' : 'default'">
                     {{ item.active == 1 ? 'Ativo' : 'Inativo' }}
                 </v-chip>
             </template>
@@ -202,18 +189,10 @@
                                         v-if="plan.id_plan"
                                         :plan="plan.id_plan"
                                     ></plan-items>
-                                    <v-alert
-                                        type="info"
-                                        v-else
-                                        dismissible
-                                        dense
-                                        outlined
-                                    >
-                                        Você poderá adicionar os serviços deste
-                                        plano na opção editar (<v-icon
-                                            color="warning"
-                                            >mdi-pencil</v-icon
-                                        >) após salvá-lo!
+                                    <v-alert type="info" v-else dismissible dense outlined>
+                                        Você poderá adicionar os serviços deste plano na opção
+                                        editar (<v-icon color="warning">mdi-pencil</v-icon>) após
+                                        salvá-lo!
                                     </v-alert>
                                 </v-col>
                             </v-row>
@@ -247,12 +226,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>

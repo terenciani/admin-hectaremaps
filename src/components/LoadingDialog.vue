@@ -3,11 +3,7 @@
         <v-card color="primary" dark>
             <v-card-text>
                 <v-card-text> {{ message }}</v-card-text>
-                <v-progress-linear
-                    indeterminate
-                    color="white"
-                    class="mb-0"
-                ></v-progress-linear>
+                <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
             </v-card-text>
         </v-card>
     </v-dialog>

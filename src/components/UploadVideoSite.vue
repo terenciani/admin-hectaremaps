@@ -34,9 +34,7 @@
                                 color="success"
                                 large
                                 block
-                                :disabled="
-                                    loadingDialog || !editing || !currentFile
-                                "
+                                :disabled="loadingDialog || !editing || !currentFile"
                                 @click="upload()"
                             >
                                 Atualizar
@@ -46,12 +44,7 @@
                     </v-row>
                 </v-col>
                 <v-col cols="12" v-if="currentFile">
-                    <v-progress-linear
-                        v-model="progress"
-                        color="light-blue"
-                        height="25"
-                        reactive
-                    >
+                    <v-progress-linear v-model="progress" color="light-blue" height="25" reactive>
                         <strong>{{ progress }} %</strong>
                     </v-progress-linear>
                 </v-col>
@@ -61,12 +54,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -133,8 +121,7 @@ export default {
                 .catch(() => {
                     this.progress = 0;
                     this.response = {
-                        message:
-                            'Não foi possível enviar o vídeo. Tente mais tarde!',
+                        message: 'Não foi possível enviar o vídeo. Tente mais tarde!',
                         type: 'error',
                         active: true
                     };

@@ -11,12 +11,12 @@
                 <template v-slot:top>
                     <v-container>
                         <v-row align="center" class="d-flex justify-space-between">
-                            <v-col cols="12" sm="6" md="3" class="d-flex align-content-center">
-                                <h3>Minhas Solicitações</h3>
+                            <v-col cols="12" sm="6" md="4" class="d-flex align-content-center">
+                                <h3>Solicitações de Processamento</h3>
                                 <v-spacer></v-spacer>
                                 <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                             </v-col>
-                            <v-col cols="12" sm="6" md="4">
+                            <v-col cols="12" sm="6" md="8">
                                 <v-text-field
                                     class="pt-0"
                                     v-model="search"
@@ -26,34 +26,6 @@
                                     hide-details
                                 ></v-text-field>
                             </v-col>
-                            <v-col md="4" class="d-none d-md-flex">
-                                <v-btn
-                                    color="primary"
-                                    dark
-                                    class="mb-2"
-                                    block
-                                    large
-                                    @click="list = false"
-                                >
-                                    Nova Solicitação
-                                    <v-icon class="pl-5" dark>
-                                        mdi-plus
-                                    </v-icon>
-                                </v-btn>
-                            </v-col>
-                            <v-btn
-                                v-show="$vuetify.breakpoint.smAndDown"
-                                fab
-                                dark
-                                fixed
-                                bottom
-                                x-large
-                                right
-                                @click="list = false"
-                                color="primary"
-                            >
-                                <v-icon>mdi-plus </v-icon>
-                            </v-btn>
                         </v-row>
                     </v-container>
                 </template>
@@ -75,22 +47,20 @@
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-btn
-                        v-if="item.status === 'FINISHED'"
                         :disabled="loading"
                         @click="download(item)"
                         color="success"
-                        title="Baixar Relatório"
+                        title="Baixar Zip"
                         icon
                         large
                     >
                         <v-icon color="success">mdi-download</v-icon>
                     </v-btn>
                     <v-btn
-                        v-if="item.status === 'CREATED'"
                         :disabled="loading"
                         @click="openConfirmDialog(item.id_request)"
                         color="error"
-                        title="Cancelar Solicitação"
+                        title="Excluir Solicitação"
                         icon
                         large
                     >
@@ -105,6 +75,26 @@
                         large
                     >
                         <v-icon color="info">mdi-eye</v-icon>
+                    </v-btn>
+                    <v-btn
+                        :disabled="loading"
+                        @click="attach(item)"
+                        color="blue-grey"
+                        title="Anexar Relatório"
+                        icon
+                        large
+                    >
+                        <v-icon color="blue-grey">mdi-paperclip</v-icon>
+                    </v-btn>
+                    <v-btn
+                        :disabled="loading"
+                        @click="editStatus(item)"
+                        color="warning"
+                        title="Alterar Status"
+                        icon
+                        large
+                    >
+                        <v-icon color="warning">mdi-pencil-box-outline</v-icon>
                     </v-btn>
                 </template>
             </v-data-table>
@@ -137,6 +127,7 @@
                 </v-btn>
             </template>
         </v-snackbar>
+        
         <v-dialog v-model="viewDialog" v-if="requestData && requestData.id_request">
             <v-card>
                 <v-toolbar color="teal" dark>
@@ -320,12 +311,11 @@ export default {
         },
         async init() {
             this.list = true;
-            this.viewDialog = false;
             this.dialogRedirect = false;
             this.dialogRemove = false;
             this.requestId = undefined;
             this.requestData = this.requestDataDefault;
-            this.requests = await RequestService.getAllUserRequests();
+            this.requests = await RequestService.getAllRequests();
         },
         getText(status) {
             switch (status) {

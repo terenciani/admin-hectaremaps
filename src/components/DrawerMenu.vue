@@ -1,9 +1,7 @@
 <template>
     <div>
         <v-app-bar color="teal accent-4" dark app>
-            <v-app-bar-nav-icon
-                @click.stop="drawer = !drawer"
-            ></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
             <v-toolbar-title>{{ $route.name }}</v-toolbar-title>
 
@@ -64,9 +62,7 @@
                         active-class="deep-purple--text text--accent-4"
                     >
                         <template v-slot:activator>
-                            <v-list-item-title>{{
-                                item.text
-                            }}</v-list-item-title>
+                            <v-list-item-title>{{ item.text }}</v-list-item-title>
                         </template>
                         <v-list-item
                             v-for="child in item.children"
@@ -78,9 +74,7 @@
                             <v-list-item-icon>
                                 <v-icon>{{ child.icon }}</v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title>{{
-                                child.text
-                            }}</v-list-item-title>
+                            <v-list-item-title>{{ child.text }}</v-list-item-title>
                         </v-list-item>
                     </v-list-group>
                 </template>
@@ -127,6 +121,7 @@ export default {
         logout() {
             AuthService.removeUserFromLocalStorage();
             this.$store.dispatch('logoffUser');
+            this.$router.push('/');
         }
     },
     async mounted() {

@@ -10,19 +10,10 @@
             <template v-slot:top>
                 <v-container>
                     <v-row align="center" class="d-flex justify-space-between">
-                        <v-col
-                            cols="12"
-                            sm="6"
-                            md="4"
-                            class="d-flex align-content-center"
-                        >
+                        <v-col cols="12" sm="6" md="4" class="d-flex align-content-center">
                             <h2>Gestão de Planos Contratados</h2>
                             <v-spacer></v-spacer>
-                            <v-divider
-                                class="mx-4 d-none d-sm-flex"
-                                inset
-                                vertical
-                            ></v-divider>
+                            <v-divider class="mx-4 d-none d-sm-flex" inset vertical></v-divider>
                         </v-col>
                         <v-col cols="12" sm="6" md="8">
                             <v-text-field
@@ -44,12 +35,7 @@
                 {{ utilFormatter.formatDateISOToBR(item.expires_in) }}
             </template>
             <template v-slot:[`item.confirm_date`]="{ item }">
-                <v-chip
-                    v-if="item.confirm_date"
-                    class="ma-2"
-                    outlined
-                    color="success"
-                >
+                <v-chip v-if="item.confirm_date" class="ma-2" outlined color="success">
                     {{ utilFormatter.formatDateISOToBR(item.confirm_date) }}
                 </v-chip>
                 <v-btn
@@ -65,12 +51,7 @@
                 </v-btn>
             </template>
             <template v-slot:[`item.finish_date`]="{ item }">
-                <v-chip
-                    v-if="item.finish_date"
-                    class="ma-2"
-                    outlined
-                    color="error"
-                >
+                <v-chip v-if="item.finish_date" class="ma-2" outlined color="error">
                     {{ utilFormatter.formatDateISOToBR(item.finish_date) }}
                 </v-chip>
                 <v-btn
@@ -121,12 +102,7 @@
         <v-snackbar v-model="response.active" :color="response.type">
             {{ response.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn
-                    :class="response.type"
-                    text
-                    v-bind="attrs"
-                    @click="response.active = false"
-                >
+                <v-btn :class="response.type" text v-bind="attrs" @click="response.active = false">
                     Fechar
                 </v-btn>
             </template>
@@ -203,9 +179,7 @@ export default {
         async confirm() {
             try {
                 if (!this.contract.id_plan_contract) return;
-                this.response.message = await ContractService.confirm(
-                    this.contract
-                );
+                this.response.message = await ContractService.confirm(this.contract);
                 this.response.type = 'success';
             } catch (error) {
                 this.response.message = error;
@@ -218,9 +192,7 @@ export default {
         async finish() {
             try {
                 if (!this.contract.id_plan_contract) return;
-                this.response.message = await ContractService.finish(
-                    this.contract
-                );
+                this.response.message = await ContractService.finish(this.contract);
                 this.response.type = 'success';
             } catch (error) {
                 this.response.message = error;
