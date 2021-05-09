@@ -18,6 +18,21 @@ export default class UploadService {
             throw error.response.data;
         }
     } // upload()
+    static async uploadReport(file, requestId, onUploadProgress) {
+        let formData = new FormData();
+        formData.append('file', file);
+        try {
+            let response = await API.post(`upload/report/${requestId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress
+            });
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // uploadReport()
     static async serviceRequest(file, requestId, onUploadProgress) {
         let formData = new FormData();
         formData.append('file', file);

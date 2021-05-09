@@ -66,4 +66,12 @@ export default class RequestService {
             throw error.response.data;
         }
     } // getRequestImages()
+    static async update(request) {
+        try {
+            let response = await API.put('request', request);
+            return response.data;
+        } catch (error) {
+            throw 'Ops! Aconteceu um erro interno, entre em contato conosco.';
+        }
+    } // update()
 } // class

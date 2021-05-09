@@ -60,6 +60,9 @@
                 <template v-slot:[`item.create_at`]="{ item }">
                     {{ utilFormatter.formatDateISOToBR(item.create_at) }}
                 </template>
+                <template v-slot:[`item.update_at`]="{ item }">
+                    {{ utilFormatter.formatDateISOToBR(item.update_at) }}
+                </template>
                 <template v-slot:[`item.status`]="{ item }">
                     <v-chip class="ma-2" outlined :color="getColor(item.status)">
                         {{ getText(item.status) }}
@@ -76,10 +79,11 @@
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-btn
                         v-if="item.status === 'FINISHED'"
+                        :href="`${host}/upload/request/${item.id_request}/report.pdf`"
                         :disabled="loading"
-                        @click="download(item)"
                         color="success"
-                        title="Baixar Relatório"
+                        target="_blank"
+                        title="Abrir Relatório"
                         icon
                         large
                     >
@@ -167,8 +171,8 @@
                                 >
                                     <template v-slot:default="{ item }">
                                         <span>
-                                    {{ item.description }} 
-                                </span>
+                                            {{ item.description }}
+                                        </span>
                                     </template>
                                 </v-virtual-scroll>
                             </v-col>
@@ -183,7 +187,7 @@
                                 <br />
                                 <strong>Telefone:</strong>
                                 {{ utilFormatter.formatPhone(requestData.user.phone) }}
-                                
+
                                 <v-divider class="my-3" />
                                 <h2 class="pb-2">Imagens enviadas</h2>
                                 <v-virtual-scroll
@@ -258,6 +262,11 @@ export default {
                     text: 'Data da Solicitação',
                     align: 'center',
                     value: 'create_at'
+                },
+                {
+                    text: 'Última Atualização',
+                    align: 'center',
+                    value: 'update_at'
                 },
                 {
                     text: 'Status',
@@ -335,6 +344,8 @@ export default {
                     return 'Processando';
                 case 'FINISHED':
                     return 'Arquivo Disponível';
+                case 'ATTACHED':
+                    return 'Produzindo relatório';
                 default:
                     return 'ERRO';
             }
@@ -347,6 +358,8 @@ export default {
                     return 'info';
                 case 'FINISHED':
                     return 'success';
+                case 'ATTACHED':
+                    return 'warning';
                 default:
                     return 'error';
             }

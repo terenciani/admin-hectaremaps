@@ -6,6 +6,7 @@
                 :headers="headers"
                 :items="planContracts"
                 :search="search"
+                sort-by="finish_date"
                 class="elevation-1"
             >
                 <template v-slot:top>
@@ -39,16 +40,24 @@
                     {{
                         item.confirm_date
                             ? utilFormatter.formatDateISOToBR(item.confirm_date)
-                            : ' Pagamento não confirmado '
+                            : 'Pagamento não confirmado'
                     }}
                 </template>
                 <template v-slot:[`item.finish_date`]="{ item }">
-                    <v-chip class="ma-2" outlined :color="item.finish_date ? 'default' : 'success'">
+                    <v-chip class="ma-2" outlined v-if="item.finish_date" color="error">
                         {{
                             item.finish_date
                                 ? utilFormatter.formatDateISOToBR(item.finish_date)
                                 : ' Ativo '
                         }}
+                    </v-chip>
+                    <v-chip
+                        class="ma-2"
+                        outlined
+                        v-else
+                        :color="item.confirm_date ? 'success' : 'default'"
+                    >
+                        {{ item.confirm_date ? 'Ativo' : 'Pagamento não confirmado' }}
                     </v-chip>
                 </template>
                 <template slot="footer" v-if="records > 0">

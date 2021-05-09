@@ -96,7 +96,6 @@ const routes = [
         path: '/process',
         name: 'Processamento',
         meta: {
-            access: ['ADMIN'],
             requiresAuth: true
         },
         component: () => import(`@/views/Process.vue`)

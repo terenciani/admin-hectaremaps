@@ -32,10 +32,23 @@
                 <template v-slot:[`item.create_at`]="{ item }">
                     {{ utilFormatter.formatDateISOToBR(item.create_at) }}
                 </template>
+                <template v-slot:[`item.update_at`]="{ item }">
+                    {{ utilFormatter.formatDateISOToBR(item.update_at) }}
+                </template>
                 <template v-slot:[`item.status`]="{ item }">
                     <v-chip class="ma-2" outlined :color="getColor(item.status)">
                         {{ getText(item.status) }}
                     </v-chip>
+                    <v-btn
+                        :disabled="loading"
+                        @click="openStatusEdit(item)"
+                        color="warning"
+                        title="Alterar Status"
+                        icon
+                        large
+                    >
+                        <v-icon color="warning">mdi-pencil-box-outline</v-icon>
+                    </v-btn>
                 </template>
                 <template slot="footer" v-if="records > 0">
                     <v-container>
@@ -48,7 +61,7 @@
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-btn
                         :disabled="loading"
-                        @click="download(item)"
+                        :href="`${host}/request/zip/${item.id_request}`"
                         color="success"
                         title="Baixar Zip"
                         icon
@@ -78,23 +91,13 @@
                     </v-btn>
                     <v-btn
                         :disabled="loading"
-                        @click="attach(item)"
+                        @click="openAttachDialog(item)"
                         color="blue-grey"
                         title="Anexar Relatório"
                         icon
                         large
                     >
                         <v-icon color="blue-grey">mdi-paperclip</v-icon>
-                    </v-btn>
-                    <v-btn
-                        :disabled="loading"
-                        @click="editStatus(item)"
-                        color="warning"
-                        title="Alterar Status"
-                        icon
-                        large
-                    >
-                        <v-icon color="warning">mdi-pencil-box-outline</v-icon>
                     </v-btn>
                 </template>
             </v-data-table>
@@ -122,12 +125,20 @@
         <v-snackbar v-model="message.active" :color="message.type">
             {{ message.text }}
             <template v-slot:action="{ attrs }">
-                <v-btn :class="message.type" text v-bind="attrs" @click="message.active = false">
+                <v-btn
+                    :class="message.type"
+                    text
+                    v-bind="attrs"
+                    @click="
+                        message = {
+                            active: false
+                        }
+                    "
+                >
                     Fechar
                 </v-btn>
             </template>
         </v-snackbar>
-        
         <v-dialog v-model="viewDialog" v-if="requestData && requestData.id_request">
             <v-card>
                 <v-toolbar color="teal" dark>
@@ -158,8 +169,8 @@
                                 >
                                     <template v-slot:default="{ item }">
                                         <span>
-                                    {{ item.description }} 
-                                </span>
+                                            {{ item.description }}
+                                        </span>
                                     </template>
                                 </v-virtual-scroll>
                             </v-col>
@@ -174,7 +185,7 @@
                                 <br />
                                 <strong>Telefone:</strong>
                                 {{ utilFormatter.formatPhone(requestData.user.phone) }}
-                                
+
                                 <v-divider class="my-3" />
                                 <h2 class="pb-2">Imagens enviadas</h2>
                                 <v-virtual-scroll
@@ -214,6 +225,88 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="dialogStatus" max-width="400">
+            <v-card shaped>
+                <v-card-title class="text-center d-block">
+                    <v-icon color="warning" large>mdi-alert-circle-outline</v-icon>
+                    <p>Status da solicitação {{ request.id_request }}</p>
+                </v-card-title>
+                <v-card-text class="text-justify">
+                    Após a alteração, o novo status ficará disponível para o cliente.
+                    <v-select
+                        v-model="request.status"
+                        :items="statusItems"
+                        item-text="text"
+                        item-value="value"
+                    >
+                    </v-select>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="init" color="error" text>
+                        Cancelar
+                    </v-btn>
+                    <v-btn color="success lighten-1" text @click="updateRequest">
+                        Confirmar
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogAttach" max-width="400">
+            <v-card shaped>
+                <v-card-title class="text-center d-block">
+                    <v-icon color="warning" large>mdi-alert-circle-outline</v-icon>
+                    <p>Relatório da solicitação {{ request.id_request }}</p>
+                </v-card-title>
+                <v-card-text class="text-justify">
+                    O arquivo ficará disponível para o cliente somente quando o status for alterado
+                    para "Arquivo Disponível".
+                    <a
+                        v-if="request.status == 'FINISHED' || request.status == 'ATTACHED'"
+                        :href="`${host}/upload/request/${request.id_request}/report.pdf`"
+                        target="_blank"
+                        style="text-decoration: none"
+                    >
+                        <v-chip class="mt-4" color="success" outlined>
+                            <v-icon left>
+                                mdi-download
+                            </v-icon>
+                            Visualizar relatório anexado.
+                        </v-chip>
+                    </a>
+
+                    <v-file-input
+                        class="mt-5"
+                        :label="
+                            request.status == 'FINISHED' ? 'Alterar Relatório' : 'Anexar relatório'
+                        "
+                        outlined
+                        accept="application/pdf"
+                        prepend-icon="mdi-file"
+                        @change="selectFile"
+                    ></v-file-input>
+
+                    <v-progress-linear
+                        v-model="progress"
+                        v-if="currentFile"
+                        color="light-blue"
+                        height="25"
+                        reactive
+                    >
+                        <strong>{{ progress }} %</strong>
+                    </v-progress-linear>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="init" color="error" text>
+                        Cancelar
+                    </v-btn>
+                    <v-btn color="success lighten-1" text @click="uploadReport">
+                        Confirmar
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -221,6 +314,7 @@
 import config from './../../config';
 import ConfirmDialog from '../components/ConfirmDialog.vue';
 import RequestService from '../service/RequestService';
+import UploadService from '../service/UploadService';
 import ServiceRequest from '../components/ServiceRequest.vue';
 import UtilFormatter from '../utils/UtilFormatter';
 export default {
@@ -232,12 +326,16 @@ export default {
     data() {
         return {
             list: true,
+            dialogStatus: false,
             dialogRedirect: false,
             dialogRemove: false,
+            dialogAttach: false,
             viewDialog: false,
             footerText: 'Total de registros: ',
             search: '',
+            progress: 0,
             host: config.apiHost,
+            currentFile: undefined,
             utilFormatter: UtilFormatter,
             headers: [
                 {
@@ -249,6 +347,11 @@ export default {
                     text: 'Data da Solicitação',
                     align: 'center',
                     value: 'create_at'
+                },
+                {
+                    text: 'Última Atualização',
+                    align: 'center',
+                    value: 'update_at'
                 },
                 {
                     text: 'Status',
@@ -264,7 +367,26 @@ export default {
             loading: false,
             emptyRecordsText: 'Nenhum registro encontrado',
             records: 0,
+            statusItems: [
+                {
+                    text: 'Aguardando Processamento',
+                    value: 'CREATED'
+                },
+                {
+                    text: 'Processando',
+                    value: 'PROCESSING'
+                },
+                {
+                    text: 'Arquivo Disponível',
+                    value: 'FINISHED'
+                },
+                {
+                    text: 'Produziando Relatório',
+                    value: 'ATTACHED'
+                }
+            ],
             requests: [],
+            request: {},
             requestId: undefined,
             requestData: undefined,
             requestDataDefault: {
@@ -282,14 +404,76 @@ export default {
         };
     },
     methods: {
+        uploadReport() {
+            if (!this.currentFile) {
+                this.message = {
+                    text: 'Por favor, selecione um arquivo PFD!',
+                    type: 'error',
+                    active: true
+                };
+                return;
+            }
+            UploadService.uploadReport(this.currentFile, this.request.id_request, event => {
+                this.progress = Math.round((100 * event.loaded) / event.total);
+            })
+                .then(() => {
+                    this.message = {
+                        text: 'Relatório enviado com sucesso!',
+                        type: 'success',
+                        active: true
+                    };
+                    this.init();
+                })
+                .catch(() => {
+                    this.progress = 0;
+                    this.message = {
+                        text: 'Não foi possível enviar o relatório. Tente mais tarde!',
+                        type: 'error',
+                        active: true
+                    };
+                    this.init();
+                });
+        },
+        selectFile(file) {
+            this.progress = 0;
+            this.currentFile = file;
+        },
         async view(request) {
             this.requestData = await RequestService.getRequestData(request.id_request);
             this.viewDialog = true;
+        },
+        openAttachDialog(request) {
+            this.request = request;
+            this.dialogAttach = true;
+        },
+        openStatusEdit(request) {
+            this.request = request;
+            this.dialogStatus = true;
         },
         openConfirmDialog(requestId) {
             this.requestId = requestId;
             this.dialogRemove = true;
         },
+        async updateRequest() {
+            if (!this.request.id_request) return;
+            try {
+                if (this.request.id_request) {
+                    await RequestService.update(this.request);
+                    this.message = {
+                        text: 'Alteração realizada com sucesso',
+                        type: 'success'
+                    };
+                }
+            } catch (error) {
+                this.message = {
+                    text: 'Aconteceu um erro interno! Aguarde um momento e tente novamente',
+                    type: 'error'
+                };
+            } finally {
+                this.init();
+                this.message.active = true;
+            }
+        }, // save()
         async cancel() {
             if (!this.requestId) return;
             try {
@@ -298,7 +482,6 @@ export default {
                     text: 'Requisição excluida com sucesso',
                     type: 'success'
                 };
-                this.init();
             } catch (error) {
                 this.message = {
                     text: 'Aconteceu um erro interno! Aguarde um momento e tente novamente',
@@ -310,12 +493,28 @@ export default {
             }
         },
         async init() {
-            this.list = true;
-            this.dialogRedirect = false;
-            this.dialogRemove = false;
-            this.requestId = undefined;
-            this.requestData = this.requestDataDefault;
-            this.requests = await RequestService.getAllRequests();
+            try {
+                this.loading = true;
+                this.requests = await RequestService.getAllRequests();
+                this.list = true;
+                this.dialogRedirect = false;
+                this.dialogRemove = false;
+                this.dialogStatus = false;
+                this.dialogAttach = false;
+                this.progress = 0;
+                this.currentFile = undefined;
+                this.requestId = undefined;
+                this.request = {};
+                this.requestData = this.requestDataDefault;
+            } catch (error) {
+                this.message = {
+                    text: 'Aconteceu um erro interno! Aguarde um momento e tente novamente',
+                    type: 'error',
+                    active: true
+                };
+            } finally {
+                this.loading = false;
+            }
         },
         getText(status) {
             switch (status) {
@@ -325,6 +524,8 @@ export default {
                     return 'Processando';
                 case 'FINISHED':
                     return 'Arquivo Disponível';
+                case 'ATTACHED':
+                    return 'Produzindo relatório';
                 default:
                     return 'ERRO';
             }
@@ -337,6 +538,8 @@ export default {
                     return 'info';
                 case 'FINISHED':
                     return 'success';
+                case 'ATTACHED':
+                    return 'warning';
                 default:
                     return 'error';
             }
