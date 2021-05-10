@@ -453,7 +453,8 @@ export default {
                     this.response.message = await UserService.update(this.user);
                     this.response.type = 'success';
                 } else {
-                    this.response.message = await UserService.save(this.user);
+                    await UserService.save(this.user);
+                    this.response.message = 'Usuário cadastrado com sucesso!';
                     this.response.type = 'success';
                 }
             } catch (error) {

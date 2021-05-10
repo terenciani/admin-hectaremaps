@@ -43,6 +43,21 @@
         <v-form ref="form" v-model="valid">
             <v-expansion-panels>
                 <v-expansion-panel>
+                    <v-expansion-panel-header>Empresa</v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field
+                                    outlined
+                                    :disabled="loadingDialog || !editing"
+                                    v-model="homeData.company"
+                                    label="Nome da Empresa"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
                     <v-expansion-panel-header>Logo e Favicon</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>

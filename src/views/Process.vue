@@ -381,7 +381,7 @@ export default {
                     value: 'FINISHED'
                 },
                 {
-                    text: 'Produziando Relatório',
+                    text: 'Produzindo Relatório',
                     value: 'ATTACHED'
                 }
             ],

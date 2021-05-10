@@ -1,120 +1,33 @@
 <template>
     <v-row class="mt-5">
-        <v-col cols="12" sm="6" md="4">
-            <v-card class="pa-3">
-                <v-btn
-                    :v-show="true"
-                    color="info"
-                    fab
-                    dark
-                    large
-                    style="border-radius: 5px;"
-                    absolute
-                    top
-                    left
-                >
-                    <v-icon>mdi-account-multiple</v-icon>
-                </v-btn>
-                <p class="text-right text-subtitle-1 font-weight-bold">
-                    Usuários
-                </p>
-                <div class="justify-space-between">
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Novos: {{ users.new }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Bloqueados: {{ users.blocked }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Ativos: {{ users.active }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Atualizar: {{ users.update }}
-                    </v-chip>
-                </div>
-            </v-card>
-        </v-col>
-        <v-col cols="12" sm="6" md="4">
-            <v-card class="pa-3">
-                <v-btn
-                    :v-show="true"
-                    color="success"
-                    fab
-                    dark
-                    large
-                    style="border-radius: 5px;"
-                    absolute
-                    top
-                    left
-                >
-                    <v-icon>mdi-sitemap</v-icon>
-                </v-btn>
-                <p class="text-right text-subtitle-1 font-weight-bold">
-                    Planos
-                </p>
-                <div class="justify-space-between">
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Contratações de hoje: {{ users.new }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Usuários com planos: {{ users.blocked }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Ativos: {{ users.active }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Usuários sem Planos: {{ users.update }}
-                    </v-chip>
-                </div>
-            </v-card>
-        </v-col>
-        <v-col cols="12" sm="6" md="4">
-            <v-card class="pa-3">
-                <v-btn
-                    :v-show="true"
-                    color="warning"
-                    fab
-                    dark
-                    large
-                    style="border-radius: 5px;"
-                    absolute
-                    top
-                    left
-                >
-                    <v-icon>mdi-toolbox-outline</v-icon>
-                </v-btn>
-                <p class="text-right text-subtitle-1 font-weight-bold">
-                    Serviços
-                </p>
-                <div class="justify-space-between">
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Novas Solicitações: {{ users.new }}
-                    </v-chip>
-                    <v-chip color="grey" outlined class="mb-3 mr-2">
-                        Solicitações Atendidas: {{ users.blocked }}
-                    </v-chip>
-                </div>
-            </v-card>
-        </v-col>
-        <v-col cols="12" class="text-center">
-            <span class="display-1">
-                Página em Construção
-            </span>
-        </v-col>
+        <user-analytics v-if="role == 'ADMIN'"></user-analytics>
+        <plan-analytics v-if="role == 'ADMIN'"></plan-analytics>
+        <request-analytics v-if="role == 'ADMIN'"></request-analytics>
+        <user-requests-analytics></user-requests-analytics>
     </v-row>
 </template>
 
 <script>
-import AnalyticsService from '@/service/AnalyticsService';
+import UserAnalytics from '../components/home/UserAnalytics';
+import PlanAnalytics from '../components/home/PlanAnalytics';
+import RequestAnalytics from '../components/home/RequestAnalytics';
+import UserRequestsAnalytics from '../components/home/UserRequestsAnalytics';
+import AuthService from '../service/AuthService';
 export default {
     name: 'Home',
     data() {
         return {
-            users: {}
+            role: 'USER'
         };
     },
+    components: {
+        UserAnalytics,
+        PlanAnalytics,
+        RequestAnalytics,
+        UserRequestsAnalytics
+    },
     async mounted() {
-        this.users = await AnalyticsService.getUserAnalytics();
+        this.role = await AuthService.getRoleUser();
     }
 };
 </script>
