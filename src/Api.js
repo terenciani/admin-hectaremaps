@@ -13,7 +13,6 @@ instance.interceptors.response.use(
 
         if (response.status === 498) {
             localStorage.removeItem('loggedUser');
-            window.location.href = '/expired';
         }
         return Promise.reject(error);
     }
