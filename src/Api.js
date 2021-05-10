@@ -14,6 +14,7 @@ instance.interceptors.response.use(
         if (response.status === 498) {
             window.location.href = '/expired';
         }
+        return Promise.reject(error);
     }
 );
 
