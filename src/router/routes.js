@@ -5,7 +5,8 @@ const routes = [
     },
     {
         path: '/expired',
-        name: 'Sessão expirada'
+        name: 'Sessão expirada',
+        component: () => import(`@/views/Expired.vue`)
     },
     {
         path: '/',
