@@ -12,9 +12,7 @@ instance.interceptors.response.use(
         const { response } = error;
 
         if (response.status === 498) {
-            // Sessão expirada
-            console.log('asd');
-            window.location = 'expired';
+            window.location.href = '/expired';
         }
     }
 );
