@@ -136,7 +136,16 @@
         <v-snackbar v-model="message.active" :color="message.type">
             {{ message.text }}
             <template v-slot:action="{ attrs }">
-                <v-btn :class="message.type" text v-bind="attrs" @click="message.active = false">
+                <v-btn
+                    :class="message.type"
+                    text
+                    v-bind="attrs"
+                    @click="
+                        message = {
+                            active: false
+                        }
+                    "
+                >
                     Fechar
                 </v-btn>
             </template>
@@ -162,6 +171,9 @@
                                 <br />
                                 <strong>Status:</strong>
                                 {{ getText(requestData.status) }}
+                                <br />
+                                <strong>Descrição:</strong>
+                                {{ requestData.description }}
                                 <v-divider class="my-3" />
                                 <h2 class="pb-2">Serviços solicitados</h2>
                                 <v-virtual-scroll
@@ -189,7 +201,9 @@
                                 {{ utilFormatter.formatPhone(requestData.user.phone) }}
 
                                 <v-divider class="my-3" />
-                                <h2 class="pb-2">Imagens enviadas</h2>
+                                <h2 class="pb-2">
+                                    Imagens enviadas ({{ requestData.images.length }})
+                                </h2>
                                 <v-virtual-scroll
                                     :items="requestData.images"
                                     height="200"
@@ -202,7 +216,7 @@
                                             "
                                             target="_blank"
                                             style="text-decoration: none"
-                                            :key="item"
+                                            :key="item.filename"
                                         >
                                             <v-chip class="ma-2" color="success" outlined>
                                                 <v-icon left>
@@ -257,6 +271,11 @@ export default {
                     text: 'Código',
                     align: 'center',
                     value: 'id_request'
+                },
+                {
+                    text: 'Descrição',
+                    align: 'center',
+                    value: 'description'
                 },
                 {
                     text: 'Data da Solicitação',

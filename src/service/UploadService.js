@@ -37,7 +37,7 @@ export default class UploadService {
         let formData = new FormData();
         formData.append('file', file);
         try {
-            let fileData = await API.post(`servicerequest/${requestId}`, formData, {
+            let fileData = await API.post(`servicerequest/big/${requestId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },

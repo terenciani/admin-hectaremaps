@@ -34,7 +34,7 @@
                 <v-stepper v-model="stepper">
                     <v-stepper-header>
                         <v-stepper-step :complete="stepper > 1" step="1">
-                            Selecionar Serviços
+                            Detalhes da Solicitação
                         </v-stepper-step>
 
                         <v-divider></v-divider>
@@ -48,6 +48,14 @@
                         <v-stepper-content step="1">
                             <v-card>
                                 <v-row class="px-5">
+                                    <v-col cols="12" class="mt-2">
+                                        <v-text-field
+                                            outlined
+                                            v-model="description"
+                                            label="Descrição"
+                                        ></v-text-field>
+                                        <h3>Selecione os serviços</h3>
+                                    </v-col>
                                     <v-col
                                         cols="12"
                                         sm="6"
@@ -95,6 +103,7 @@
                                         ></v-file-input>
                                     </v-col>
 
+                                    {{allowUpload}}
                                     <v-col cols="4" class="pl-5">
                                         <v-btn
                                             color="success"
@@ -108,26 +117,36 @@
                                             <v-icon right dark>mdi-cloud-upload</v-icon>
                                         </v-btn>
                                     </v-col>
-                                    <v-col cols="12">
-                                        <v-card v-if="imagesNames.length > 0" class="mx-auto">
-                                            <a
-                                                :href="
-                                                    `${host}/upload/request/${requestId}/${file.filename}`
-                                                "
-                                                target="_blank"
-                                                style="text-decoration: none"
-                                                v-for="(file, index) in imagesNames"
-                                                :key="index"
-                                            >
-                                                <v-chip class="ma-2" color="success" outlined>
-                                                    <v-icon left>
-                                                        mdi-eye
-                                                    </v-icon>
+                                    <v-col cols="12" v-if="imagesNames.length > 0">
+                                        <h2 class="pb-2">
+                                            Imagens enviadas ({{ imagesNames.length }}/{{
+                                                selectedImages.length
+                                            }})
+                                        </h2>
+                                        <v-virtual-scroll
+                                            :items="imagesNames"
+                                            height="200"
+                                            item-height="35"
+                                        >
+                                            <template v-slot:default="{ item }">
+                                                <a
+                                                    :href="
+                                                        `${host}/upload/request/${requestId}/${item.filename}`
+                                                    "
+                                                    target="_blank"
+                                                    style="text-decoration: none"
+                                                    :key="item.filename"
+                                                >
+                                                    <v-chip class="ma-2" color="success" outlined>
+                                                        <v-icon left>
+                                                            mdi-eye
+                                                        </v-icon>
 
-                                                    {{ file.filename }}
-                                                </v-chip>
-                                            </a>
-                                        </v-card>
+                                                        {{ item.filename }}
+                                                    </v-chip>
+                                                </a>
+                                            </template>
+                                        </v-virtual-scroll>
                                     </v-col>
                                 </v-row>
                                 <v-row>
@@ -138,7 +157,7 @@
                                         <v-btn
                                             color="primary"
                                             text
-                                            :disabled="imagesNames.length <= 0"
+                                            :disabled="imagesNames.length != selectedImages.length"
                                             @click="dialogRedirect = true"
                                         >
                                             Finalizar
@@ -168,7 +187,16 @@
         <v-snackbar v-model="message.active" :color="message.type">
             {{ message.text }}
             <template v-slot:action="{ attrs }">
-                <v-btn :class="message.type" text v-bind="attrs" @click="message.active = false">
+                <v-btn
+                    :class="message.type"
+                    text
+                    v-bind="attrs"
+                    @click="
+                        message = {
+                            active: false
+                        }
+                    "
+                >
                     Fechar
                 </v-btn>
             </template>
@@ -201,7 +229,10 @@ export default {
             progressInfos: [],
             imageInfos: [],
             requestId: {},
+            description: '',
             imagesNames: [],
+            uploading: false,
+            total: 0,
             message: {
                 text: '',
                 type: '',
@@ -211,6 +242,8 @@ export default {
     },
     computed: {
         allowUpload() {
+            if (this.uploading)
+                return false;
             if (!this.selectedImages || this.selectedImages.length <= 0) return true;
             return false;
         }
@@ -228,7 +261,8 @@ export default {
             try {
                 this.requestId = await RequestService.createRequest(
                     this.selectedServices,
-                    this.planContracted
+                    this.planContracted,
+                    this.description
                 );
                 this.stepper = 2;
             } catch (error) {
@@ -258,7 +292,8 @@ export default {
             this.progressInfos = [];
             this.selectedImages = images;
         },
-        uploadImages() {
+        async uploadImages() {
+            this.uploading = true;
             this.message = {
                 text: '',
                 type: '',
@@ -266,13 +301,14 @@ export default {
             };
 
             for (let i = 0; i < this.selectedImages.length; i++) {
-                this.upload(i, this.selectedImages[i]);
+                await this.upload(i, this.selectedImages[i]);
             }
+            this.uploading = false;
         },
-        upload(index, file) {
+        async upload(index, file) {
             this.progressInfos[index] = { percentage: 0, fileName: file.name };
-
-            UploadService.serviceRequest(file, this.requestId, event => {
+            await UploadService.serviceRequest(file, this.requestId, event => {
+                this.total = event.total;
                 this.progressInfos[index].percentage = Math.round(
                     (100 * event.loaded) / event.total
                 );
@@ -307,7 +343,10 @@ export default {
         },
         async init() {
             this.stepper = 1;
+            this.description = '';
             this.services = [];
+            this.total = 0;
+            this.uploading = false;
             try {
                 this.planContracted = await ContractService.getContractCurrentByUser();
                 if (this.planContracted.id_plan_contract) {

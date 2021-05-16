@@ -18,11 +18,12 @@ export default class RequestService {
             throw error.response.data;
         }
     } // getAllUserRequests()
-    static async createRequest(selectedServices, plan) {
+    static async createRequest(selectedServices, plan, description) {
         try {
             let response = await API.post('request', {
                 selectedServices,
-                plan
+                plan,
+                description
             });
             return response.data;
         } catch (error) {

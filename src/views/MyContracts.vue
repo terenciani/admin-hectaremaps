@@ -140,7 +140,16 @@
         <v-snackbar v-model="message.active" :color="message.type">
             {{ message.text }}
             <template v-slot:action="{ attrs }">
-                <v-btn :class="message.type" text v-bind="attrs" @click="message.active = false">
+                <v-btn
+                    :class="message.type"
+                    text
+                    v-bind="attrs"
+                    @click="
+                        message = {
+                            active: false
+                        }
+                    "
+                >
                     Fechar
                 </v-btn>
             </template>
