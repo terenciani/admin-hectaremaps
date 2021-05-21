@@ -2,7 +2,8 @@
 
 import AuthService from './../../../service/AuthService';
 import API from '../../../Api';
-import Router from '../../../router'
+import Store from '../../../store';
+import Router from '../../../router';
 export default {
     state: {
         user: {
@@ -17,7 +18,7 @@ export default {
     },
     getters: {
         getStateLog: state => state.user.logged,
-        getUserLogged: state => state.user,
+        getUserLogged: state => state.user
     },
     mutations: {
         setLoggedUser(state, payload) {
@@ -48,7 +49,9 @@ export default {
                 const tokenIsValid = await AuthService.varefyIfTokenIsValid(loggedUser.token);
                 if (tokenIsValid && loggedUser && loggedUser.id_user) {
                     context.commit('setLoggedUser', loggedUser);
-                    Router.push('/')
+                    if (loggedUser.status === Store.getters['apiHelper/userHelpers'].status.update)
+                        Router.push('/profile');
+                    else Router.push('/');
                 } else {
                     context.dispatch('logoffUser');
                 }
@@ -63,7 +66,7 @@ export default {
             } catch (error) {
                 console.log(error);
             } finally {
-                Router.push('/login')
+                Router.push('/login');
             }
         }
     }

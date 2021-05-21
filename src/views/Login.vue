@@ -1,9 +1,7 @@
 <template>
-    <div class="bg-image">
-        <v-container fluid fill-height>
-            <form-login></form-login>
-        </v-container>
-    </div>
+    <v-container fluid fill-height class="bg-image">
+        <form-login></form-login>
+    </v-container>
 </template>
 
 <script>
@@ -14,3 +12,11 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.bg-image {
+    background-image: url('../assets/bg_main.jpg');
+    background-position: center;
+    background-size: cover;
+}
+</style>

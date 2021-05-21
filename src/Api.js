@@ -11,10 +11,11 @@ instance
         Store.commit('apiHelper/setHelpers', res.data);
     })
     .catch(console.log);
-const isAuthenticationError = (response) =>{
-    const errorCode = response?.data?.code
-    return Store.getters['apiHelper/userHelpers'].errosWithRequiresLogin.includes(errorCode)
-}
+
+const isAuthenticationError = response => {
+    const errorCode = response?.data?.code;
+    return Store.getters['apiHelper/userHelpers'].errosWithRequiresLogin.includes(errorCode);
+};
 
 instance.interceptors.response.use(
     response => {
@@ -22,9 +23,8 @@ instance.interceptors.response.use(
     },
     error => {
         const { response } = error;
-        
-        if(isAuthenticationError(response))
-            Store.dispatch('logoffUser');
+
+        if (isAuthenticationError(response)) Store.dispatch('logoffUser');
 
         return Promise.reject(error);
     }
