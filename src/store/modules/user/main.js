@@ -2,7 +2,7 @@
 
 import AuthService from './../../../service/AuthService';
 import API from '../../../Api';
-
+import Router from '../../../router'
 export default {
     state: {
         user: {
@@ -17,7 +17,7 @@ export default {
     },
     getters: {
         getStateLog: state => state.user.logged,
-        getUserLogged: state => state.user
+        getUserLogged: state => state.user,
     },
     mutations: {
         setLoggedUser(state, payload) {
@@ -28,6 +28,7 @@ export default {
             state.user.email = payload.email;
             state.user.token = payload.token;
             state.user.status = payload.status;
+            API.defaults.headers['x-access-token'] = payload.token;
         },
         loggoutUser(state) {
             state.user.id_user = '';
@@ -37,16 +38,19 @@ export default {
             state.user.email = '';
             state.user.token = '';
             state.user.status = '';
+            API.defaults.headers['x-access-token'] = '';
         }
     },
     actions: {
-        loadLoggedUser(context) {
+        async loadLoggedUser(context) {
             try {
                 let loggedUser = AuthService.getLoggedUser();
-
-                if (loggedUser && loggedUser.id_user) {
-                    API.defaults.headers['x-access-token'] = loggedUser.token;
+                const tokenIsValid = await AuthService.varefyIfTokenIsValid(loggedUser.token);
+                if (tokenIsValid && loggedUser && loggedUser.id_user) {
                     context.commit('setLoggedUser', loggedUser);
+                    Router.push('/')
+                } else {
+                    context.dispatch('logoffUser');
                 }
             } catch (error) {
                 console.log(error);
@@ -55,10 +59,11 @@ export default {
         logoffUser(context) {
             try {
                 AuthService.removeUserFromLocalStorage();
-                API.defaults.headers['x-access-token'] = '';
                 context.commit('loggoutUser');
             } catch (error) {
                 console.log(error);
+            } finally {
+                Router.push('/login')
             }
         }
     }

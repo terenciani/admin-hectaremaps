@@ -9,6 +9,11 @@ const routes = [
         component: () => import(`@/views/Expired.vue`)
     },
     {
+        path: '/login',
+        name: 'Página de Login',
+        component: () => import(`@/views/Login.vue`)
+    },
+    {
         path: '/',
         name: 'Início',
         meta: {

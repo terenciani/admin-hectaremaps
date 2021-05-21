@@ -103,7 +103,7 @@
                                         ></v-file-input>
                                     </v-col>
 
-                                    {{allowUpload}}
+                                    {{ allowUpload }}
                                     <v-col cols="4" class="pl-5">
                                         <v-btn
                                             color="success"
@@ -242,8 +242,7 @@ export default {
     },
     computed: {
         allowUpload() {
-            if (this.uploading)
-                return false;
+            if (this.uploading) return false;
             if (!this.selectedImages || this.selectedImages.length <= 0) return true;
             return false;
         }

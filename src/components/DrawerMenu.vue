@@ -119,9 +119,9 @@ export default {
     },
     methods: {
         logout() {
-            AuthService.removeUserFromLocalStorage();
+            // AuthService.removeUserFromLocalStorage();
             this.$store.dispatch('logoffUser');
-            this.$router.push('/');
+            // this.$router.push('/login');
         }
     },
     async mounted() {

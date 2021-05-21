@@ -30,17 +30,17 @@ export default class AuthService {
 
     //--------------------------local-storage--------------------------//
     static getLoggedUser() {
-        return JSON.parse(localStorage.getItem('loggedUser'));
+        return JSON.parse(localStorage.getItem('loggedUser')) || { logged: false };
     } // getLoggedUser()
 
-    static async getTokenUser() {
-        let user = await AuthService.getLoggedUser();
+    static getTokenUser() {
+        let user = AuthService.getLoggedUser();
         if (user != null) return user.token;
         return null;
     } //getTokenUser()
 
-    static async getRoleUser() {
-        let user = await AuthService.getLoggedUser();
+    static getRoleUser() {
+        let user = AuthService.getLoggedUser();
         if (user != null) return user.role;
         return null;
     } //getRoleUser()
@@ -54,4 +54,13 @@ export default class AuthService {
         localStorage.removeItem('loggedUser');
         return true;
     } //removeUserFromLocalStorage
+
+    static async varefyIfTokenIsValid(token) {
+        try {
+            const res = await API.get(`/validate-token/${token}`);
+            return res.data.isValid;
+        } catch (err) {
+            return err.response?.data?.isValid;
+        }
+    } //varefyIfTokenIsValid
 } // class

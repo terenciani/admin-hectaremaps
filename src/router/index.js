@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Store from './../store';
+import AuthService from '../service/AuthService';
 import routes from './routes';
-import AuthService from './../service/AuthService';
-
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -10,22 +10,41 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 });
+const validationPipeline = [
+    ({ logged }) => logged,
+    ({to, role }) => role === 'ADMIN' || to.matched.meta?.access?.includes(role),
+]
+const findLoggedUser = () => (
+    Store.getters.getUserLogged ||
+    AuthService.getLoggedUser()
+)
 
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        // precisa de autorização?
-        let user = AuthService.getLoggedUser();
-        if (user == null) {
-            // usuario é nulo?
-            if (to.path != '/') {
-                next({ path: '/' });
-            } else next();
-        } else if (!user.role == 'ADMIN') {
-            if (to.matched.some(record => !record.meta.access.includes(user.role))) {
-                // usuario NÃO tem permissão?
-                next({ path: '/unauthorized' });
-            } else next();
-        } else next();
-    } else next();
-});
+const isAvaliable = (to, from, next) => {
+    if(to.meta.requiresAuth){
+        const user = findLoggedUser()
+        const unauthorized = validationPipeline.some(fn => !fn(user));
+        unauthorized ? next({ path: '/login' }) : next();
+    } else next()
+}
+// router.beforeEach((to, from, next) => {
+//     if (to.matched.some(record => record.meta.requiresAuth)) {
+//         // precisa de autorização?
+//         let user = AuthService.getLoggedUser();
+//         if (user == null) {
+//             // usuario é nulo?
+//             if (to.path != '/login') {
+//                 next({ path: '/login' });
+//             }
+//             else next();
+//         } else if (!user.role == 'ADMIN') {
+//             if (to.matched.some(record => !record.meta.access.includes(user.role))) {
+//                 // usuario NÃO tem permissão?
+//                 next({ path: '/unauthorized' });
+//             } else next();
+//         } else next();
+//     } else next();
+// });
+
+router.beforeEach(isAvaliable);
+// router.beforeEach((a, b, c) => a. ==)
 export default router;

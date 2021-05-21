@@ -180,9 +180,9 @@ export default {
                     this.$store.dispatch('loadLoggedUser');
                     console.log(resp.user.status);
                     if (resp.user.status == 'UPDATE' || resp.user.status == 'NEW') {
-                        this.$router.go('/profile');
+                        this.$router.push('/profile');
                     } else {
-                        this.$router.go(this.defaultRoute);
+                        this.$router.push(this.defaultRoute);
                     }
 
                     this.response.type = 'success';
