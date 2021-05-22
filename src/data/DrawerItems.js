@@ -69,6 +69,12 @@ const userItems = [
         text: 'Solicitações de Serviço',
         to: '/myrequests',
         heading: false
+    },
+    {
+        icon: 'mdi-drone',
+        text: 'Solicitações de Serviço Local',
+        to: '/localrequests',
+        heading: false
     }
 ];
 

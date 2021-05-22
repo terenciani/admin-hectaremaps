@@ -272,7 +272,7 @@ export default {
         async cancel() {
             if (!this.requestId) return;
             try {
-                await RequestService.cancelRequest(this.requestId);
+                await RequestService.cancelLocalRequest(this.requestId);
                 this.$router.push('/');
             } catch (error) {
                 this.message = {
@@ -316,7 +316,7 @@ export default {
             }
         },
         async upload(file) {
-            await UploadService.serviceRequest(file, this.requestId, event => {
+            await UploadService.serviceLocalRequest(file, this.requestId, event => {
                 this.total = event.total;
             })
                 .then(response => {

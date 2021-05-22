@@ -19,6 +19,9 @@ const isAuthenticationError = response => {
 
 instance.interceptors.response.use(
     response => {
+        if (response.config) {
+            response.config.meta.timeSpent = Date.now() - response.config.meta.startedAs;
+        }
         return response;
     },
     error => {
@@ -29,5 +32,11 @@ instance.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+instance.interceptors.request.use(req => {
+    req.meta = req.meta || {};
+    req.meta.startedAs = Date.now();
+    return req;
+});
 
 export default instance;

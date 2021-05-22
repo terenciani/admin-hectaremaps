@@ -98,6 +98,16 @@ const routes = [
         },
         component: () => import(`@/views/MyRequests.vue`)
     },
+
+    {
+        path: '/localrequests',
+        name: 'Solicitações de Serviço Local',
+        meta: {
+            access: ['USER'],
+            requiresAuth: true
+        },
+        component: () => import(`@/views/LocalRequests.vue`)
+    },
     {
         path: '/process',
         name: 'Processamento',

@@ -40,6 +40,17 @@ export default class RequestService {
             throw error.response.data;
         }
     } // cancelRequest()
+    static async cancelLocalRequest(requestId) {
+        console.log('aqui');
+        try {
+            let response = await API.delete('request/local', {
+                data: { request: requestId }
+            });
+            return response.data;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // cancelRequest()
 
     static async getRequestActivesByUser() {
         try {

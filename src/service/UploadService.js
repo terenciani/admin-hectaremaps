@@ -43,11 +43,26 @@ export default class UploadService {
                 },
                 onUploadProgress
             });
-            return fileData.data;
+            return fileData;
         } catch (error) {
             throw error.response.data;
         }
     } // serviceRequest()
+    static async serviceLocalRequest(file, requestId, onUploadProgress) {
+        let formData = new FormData();
+        formData.append('file', file);
+        try {
+            let fileData = await API.post(`servicerequest/local/${requestId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress
+            });
+            return fileData;
+        } catch (error) {
+            throw error.response.data;
+        }
+    } // serviceRequestLocal()
     static async uploadVideo(file, onUploadProgress) {
         let formData = new FormData();
         formData.append('file', file);
