@@ -2,7 +2,17 @@
     <v-container>
         <div v-if="selectedImages.length > 0">
             <v-progress-linear v-model="percentOfSend" color="light-blue" height="25" reactive>
-                <strong>{{ percentOfSend.toFixed() }} %</strong>
+                <strong>Progresso total: {{ percentOfSend.toFixed() }} %</strong>
+            </v-progress-linear>
+        </div>
+        <div v-if="selectedImages.length > 0" class="mt-3">
+            <v-progress-linear
+                v-model="individualPercentOfSend"
+                color="light-blue"
+                height="25"
+                reactive
+            >
+                <strong>Progresso individual: {{ individualPercentOfSend }} %</strong>
             </v-progress-linear>
         </div>
         <v-row v-if="!planContracted.id_plan_contract">
@@ -220,6 +230,7 @@ export default {
             description: '',
             imagesNames: [],
             percentOfSend: 0,
+            individualPercentOfSend: 0,
             uploading: false,
             uploaded: false,
             total: 0,
@@ -318,6 +329,7 @@ export default {
         async upload(file) {
             await UploadService.serviceRequest(file, this.requestId, event => {
                 this.total = event.total;
+                this.individualPercentOfSend = Math.round((100 * event.loaded) / event.total);
             })
                 .then(response => {
                     //this.timeSpent += response.config.meta.timeSpent;
@@ -341,6 +353,7 @@ export default {
             this.uploading = false;
             this.uploaded = false;
             this.percentOfSend = 0;
+            this.individualPercentOfSend = 0;
             try {
                 this.planContracted = await ContractService.getContractCurrentByUser();
                 if (this.planContracted.id_plan_contract) {
